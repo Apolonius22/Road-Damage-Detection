@@ -1,4 +1,3 @@
 test
 123
-new branch
-test 123
+conflict test
