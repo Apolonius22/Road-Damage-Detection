@@ -1,0 +1,448 @@
+#:import MapView kivy_garden.mapview.MapView
+#:import MapSource kivy_garden.mapview.MapSource
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+<Toolbar@BoxLayout>:
+    size_hint_y: None
+    height: '48dp'
+    padding: '4dp'
+    spacing: '4dp'
+    canvas:
+        Color:
+            rgba: .2, .2, .2, .6
+        Rectangle:
+            pos: self.pos
+            size: self.size
+<ShadedLabel@Label>:
+    size: self.texture_size
+    canvas.before:
+        Color:
+            rgba: .2, .2, .2, .6
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+
+
+
+<DrawerClickableItem@MDNavigationDrawerItem>
+    focus_color: "#e7e4c0"
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    ripple_color: "#c5bdd2"
+    selected_color: "#0c6c4d"
+
+
+<DrawerLabelItem@MDNavigationDrawerItem>
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    focus_behavior: False
+    selected_color: "#4a4939"
+    _no_ripple_effect: True
+
+
+    
+
+
+
+
+<ClickableTextFieldRound>:
+    id: ClickableTextField
+    size_hint_y: None
+    height: text_field.height
+    test: None
+
+    MDTextField:
+        id: text_field
+        mode: "round"
+        hint_text: root.hint_text
+        text: root.text
+        write_tab: False
+        multiline: False
+        on_text_validate: 
+            app.center_map(ClickableTextField.test,text_field.text)
+        
+
+    MDIconButton:
+        id: SearchButton
+        icon: "magnify"
+        pos_hint: {"center_y": .5}
+        pos: text_field.width - self.width + dp(8), 0
+        theme_text_color: "Hint"
+        on_release:
+            app.center_map(ClickableTextField.test,text_field.text)
+
+
+
+
+
+<SaveFile>:
+
+    title: 'Save File'
+    auto_dismiss: False
+
+    # FileChooserLayout
+    GridLayout:
+        cols:1   
+        # ButtonArea
+        GridLayout:
+            cols:1
+            spacing: 50
+            size_hint: (.5,.5)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            TextInput:
+                id: file_path
+                size_hint: (.09,.09)
+            
+            FileChooserIconView:
+                id:filechooser
+                on_selection: 
+                    file_path.text = self.selection and self.selection[0]
+                dirselect: True
+ 
+        Button:
+            text: "Save and continue"
+            size_hint: (.09,.09)
+            on_press:
+                root.Getthepath(file_path.text)
+                root.dismiss()
+
+
+
+
+                    
+
+ScreenManager:
+    
+    Mainscreen:
+    Analyticsscreen:
+    Settingsscreen:
+    #transition: FadeTransition()
+
+
+
+
+<Mainscreen>:
+    name:"Mainscreen"
+
+    MDScreen:
+
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+
+
+
+
+
+                    RelativeLayout:
+
+
+                        Map:
+                            id: mapview
+                            lat: 10
+                            lon: 10
+                            zoom: 10
+                            on_zoom:
+                                self.zoom = 5 if self.zoom < 5 else self.zoom
+                            on_lat:
+                                self.init_damages()
+                            on_lon:
+                                self.init_damages()
+
+                
+
+                        MDTopAppBar:
+                            title: "Main Screen"
+                            #elevation: 4
+                            pos_hint: {"top": 1}
+                            md_bg_color: "#e7e4c0"
+                            specific_text_color: "#4a4939"
+                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                            right_action_items:
+                                [
+                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                                ["cog", lambda x: app.switch_to_Settingsscreen(), "settings", "settings"],
+                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                                ["logout",lambda x: app.center_map(mapview,"5,5"),"logout","logout"]
+                                ]
+                    MDCard:
+                        orientation: "vertical"
+                        padding: "10dp"
+                        spacing: "5dp"
+                        size_hint: None, None
+                        size: "300dp",  "55dp"
+                        pos_hint: {"center_x": .105, 'top': 0.9}
+
+                        ClickableTextFieldRound:
+                            size_hint_x: None
+                            width: "290dp"
+                            hint_text: "Enter City or GPS to focuse on"# e.g cham or 49.2,32.1"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            test: mapview
+
+                                
+
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                radius: (0, 16, 16, 0)
+                #padding: (0, 56, 12, 16)
+
+                MDNavigationDrawerMenu:
+
+
+                    
+                    MDNavigationDrawerHeader:
+                        title: "Header title"
+                        title_color: "#4a4939"
+                        text: "Header text"
+                        spacing: "4dp"
+                        padding: "12dp", 0, 0, "56dp"
+                    
+                    MDNavigationDrawerLabel:
+                        text: "Enter City or GPS to focuse on"
+                    
+                    
+                    ClickableTextFieldRound:
+                        size_hint_x: None
+                        width: "290dp"
+                        hint_text: "e.g cham or 49.2,32.1"
+                        pos_hint: {"center_x": .2, "center_y": .5}
+                        test: mapview
+                    MDNavigationDrawerDivider:
+
+                    MDNavigationDrawerLabel:
+                        text: "User "
+
+                    DrawerClickableItem:
+                        icon: "login"
+                        right_text: "+99"
+                        text_right_color: "#4a4939"
+                        text: "LogIn"
+
+                    DrawerClickableItem:
+                        icon: "account"
+                        text: "register"
+
+                    MDNavigationDrawerDivider:
+
+                    MDNavigationDrawerLabel:
+                        text: "Report"
+
+                    DrawerClickableItem:
+                        icon: "file-document"
+                        text: "create report"
+
+        
+
+        
+       
+
+
+
+    
+<Analyticsscreen>:
+    name:"Analyticsscreen"
+    
+    MDScreen:
+
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+                    RelativeLayout:
+
+
+                        MDTopAppBar:
+                            title: "Analytics Screen"
+                            elevation: 4
+                            pos_hint: {"top": 1}
+                            md_bg_color: "#e7e4c0"
+                            specific_text_color: "#4a4939"
+                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                            right_action_items:
+                                [
+                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                                ["cog", lambda x: app.switch_to_Settingsscreen(), "settings", "settings"],
+                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                                ["logout",lambda x: app.navigation_draw(),"logout","logout"],
+                                ]
+
+                    MDCard:
+                        orientation: "vertical"
+                        padding: "10dp"
+                        spacing: "5dp"
+                        size_hint: None, None
+                        size: "1500dp",  "690dp"
+                        pos_hint: {"center_x": .5,"center_y": .46}
+                        md_bg_color: [0,0.5,0.5, 0.3] 
+                        BoxLayout:
+                            orientation: "vertical"
+                            MDLabel:
+                                text: "Welcome to your new healthy live"
+                                color: "white"
+                                #halign: 'center'
+                                #size_hint_y: None
+                                #height: self.texture_size[1]
+
+                            MDTextField:
+                                id: email_id
+                                hint_text: "Email"
+                                icon_right: 'account'
+                                size_hint_x: None
+                                #width: 220
+                                #font_size: 16
+
+                                #max_text_length: 20
+                                helper_text: "Enter your email (needs to contain @)"
+                                line_color_focus: 0.2, 0.2, 0.2, 0.8
+                            
+                            MDLabel:
+                                text: "Welcome to your new healthy live"
+                                color: "white"
+                                #halign: 'center'
+                                #size_hint_y: None
+                                #height: self.texture_size[1]
+
+                            MDTextField:
+                                id: email_id
+                                hint_text: "Email"
+                                icon_right: 'account'
+                                size_hint_x: None
+                                #width: 220
+                                #font_size: 16
+
+                                #max_text_length: 20
+                                helper_text: "Enter your email (needs to contain @)"
+                                line_color_focus: 0.2, 0.2, 0.2, 0.8
+                                
+
+
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                radius: (0, 16, 16, 0)
+
+                MDNavigationDrawerMenu:
+
+                    MDNavigationDrawerHeader:
+                        title: "Header title"
+                        title_color: "#4a4939"
+                        text: "Header text"
+                        spacing: "4dp"
+                        padding: "12dp", 0, 0, "56dp"
+
+                    MDNavigationDrawerLabel:
+                        text: "User "
+
+                    DrawerClickableItem:
+                        icon: "gmail"
+                        right_text: "+99"
+                        text_right_color: "#4a4939"
+                        text: "LogIn"
+
+                    DrawerClickableItem:
+                        icon: "send"
+                        text: "register"
+
+                    MDNavigationDrawerDivider:
+
+                    MDNavigationDrawerLabel:
+                        text: "Report"
+
+                    DrawerClickableItem:
+                        icon: "file-document"
+                        text: "create report"
+
+                    MDNavigationDrawerLabel:
+                        text: "Labels"
+
+                    DrawerLabelItem:
+                        icon: "information-outline"
+                        text: "Label"
+
+                    DrawerLabelItem:
+                        icon: "information-outline"
+                        text: "Label"
+
+<Settingsscreen>:
+    name:"Settingsscreen"
+    
+    MDScreen:
+
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+                    RelativeLayout:
+
+
+                        MDTopAppBar:
+                            title: "Settings Screen"
+                            elevation: 4
+                            pos_hint: {"top": 1}
+                            md_bg_color: "#e7e4c0"
+                            specific_text_color: "#4a4939"
+                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                            right_action_items:
+                                [
+                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                                ["cog", lambda x: app.switch_to_Settingsscreen(), "settings", "settings"],
+                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                                ["logout",lambda x: app.navigation_draw(),"logout","logout"],
+                                ]
+
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                radius: (0, 16, 16, 0)
+
+                MDNavigationDrawerMenu:
+
+                    MDNavigationDrawerHeader:
+                        title: "Header title"
+                        title_color: "#4a4939"
+                        text: "Header text"
+                        spacing: "4dp"
+                        padding: "12dp", 0, 0, "56dp"
+
+                    MDNavigationDrawerLabel:
+                        text: "Mail"
+
+                    DrawerClickableItem:
+                        icon: "gmail"
+                        right_text: "+99"
+                        text_right_color: "#4a4939"
+                        text: "Inbox"
+
+                    DrawerClickableItem:
+                        icon: "send"
+                        text: "Outbox"
+
+                    MDNavigationDrawerDivider:
+
+                    MDNavigationDrawerLabel:
+                        text: "Labels"
+
+                    DrawerLabelItem:
+                        icon: "information-outline"
+                        text: "Label"
+
+                    DrawerLabelItem:
+                        icon: "information-outline"
+                        text: "Label"
+ 
+                        
+    
+
+
