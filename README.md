@@ -1,3 +1,8 @@
 "# Road-Damage-Detection" 
 
-This is a University Project
+Members of Projekt
+
+1
+2
+3
+
