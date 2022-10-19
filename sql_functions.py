@@ -1,7 +1,8 @@
 import sqlite3
+import os
 
 
-path_to_db = r"C:\Users\tobia\Desktop\Studium\case_study_two\test\damageapp.sqlite"
+path_to_db = os.path.dirname(__file__) + "\damageapp.sqlite"#r"C:\Users\tobia\Desktop\Studium\case_study_two\test\damageapp.sqlite"
 
 
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
