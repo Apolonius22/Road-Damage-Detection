@@ -92,7 +92,7 @@ class Map(MapView):
                 first.add_widget(card)
                 bub.add_widget(first)
                 marker.add_widget(bub)
-                self.add_marker(marker)
+                self.widget(marker)
 
 
     def init_damages(self,*args):
