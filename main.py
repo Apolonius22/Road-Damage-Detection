@@ -3,77 +3,39 @@
 
 
 
-#################### imports ####################
+####################  Kivy imports ####################
 
-from cProfile import run
-from kivy.app import App
 from kivy_garden.mapview import MapMarkerPopup,MapView
-from kivy.uix.button import Button
-from kivy.uix.screenmanager import Screen, NoTransition, CardTransition, ScreenManager
+from kivy.properties import StringProperty
 from kivy.core.window import Window
+
+####################  Kivy.uix imports ####################
+
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
-from sql_functions import get_all_damages
 from kivy.uix.button import Button
-from kivymd.uix.button import MDRectangleFlatIconButton
-from kivy.properties import ObjectProperty
-#from kivymd.uix.textfield import MDTextFieldRound
+from kivy.uix.bubble import Bubble
+from kivy.uix.button import Button
+from kivy.uix.image import Image
+from kivy.uix.popup import Popup
+from kivy.uix.screenmanager import FadeTransition,Screen#, NoTransition, CardTransition, ScreenManager
+from kivy.uix.widget import Widget
 
-
-#################### configuration
-from kivymd.app import MDApp
+####################  Kivymd imports ####################
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.behaviors import RoundedRectangularElevationBehavior
-from kivymd.uix.button import MDRectangleFlatIconButton
-from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
-from kivymd.uix.card import MDCardSwipe
-from kivy.properties import StringProperty
 from kivymd.uix.relativelayout import MDRelativeLayout
-from kivy.uix.bubble import Bubble
-from kivy.uix.image import Image
-from kivy.uix.screenmanager import FadeTransition
+
+#################### configuration / Global Variables
 
 Window.maximize()
-damagetypelist=['Pothole','Crack','AlligatorCrack'] 
 
 
+#################### Other Imports ####################
 
+from functions import *
+from sql_functions import *
 
-from kivymd.app import MDApp
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDIconButton
-from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
-from kivymd.uix.relativelayout import MDRelativeLayout
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.label import MDLabel
-from kivy.uix.gridlayout import GridLayout
-from kivy.properties import ObjectProperty
-
-from kivymd.uix.button import MDRectangleFlatIconButton
-
-
-from kivy.uix.popup import Popup
-
-from geopy.geocoders import Nominatim
-
-
-def isfloat(num):
-    try:
-        float(num)
-        return True
-    except ValueError:
-        return False
-
-
-def get_adress(Latitude,Longitude):
-    geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(Latitude+","+Longitude)
-
-    return location
 
 #################### Screens ####################
 
@@ -84,21 +46,27 @@ class Map(MapView):
     init = False
     
     def load_points_from_db(self,*args):
-            self.init= True
+            self.init = True
+            #self.clear_widgets()
+
             damagelist = get_all_damages()
 
+            
+
+
+
             for damage in damagelist:
-                marker = MapMarkerPopup(lat = damage[1],lon = damage[2],popup_size= (450,250))
+                marker = MapMarkerPopup(lat = damage.lat,lon = damage.lon,popup_size= (450,250))
                 
                 
                 
                 
                 butt = Button(text = "change",size= (130, 25),size_hint= (None, None))
-                if damage[6] != None:
-                    date = f"{damage[6][8:10]}:{damage[6][5:7]}:{damage[6][0:4]}"
+                if damage.timestamp != None:
+                    date = f"{damage.timestamp[8:10]}:{damage.timestamp[5:7]}:{damage.timestamp[0:4]}"
                 else:
                     date = "unknown"
-                text = MDLabel(text = f"""Damage ID: {damage[0]}\nLocation: {damage[1]}\\{damage[2]}\nType: {damagetypelist[damage[3]]}\nSeverity: {damage[4]}\nWeather: {damage[5]}\nTimestamp: {date}\nUser ID: {damage[7]}\nRepair status: {damage[8]} """)
+                text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {damage.lat}\\{damage.lon}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nTimestamp: {date}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
 
                 first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
                 
@@ -124,7 +92,7 @@ class Map(MapView):
                 first.add_widget(card)
                 bub.add_widget(first)
                 marker.add_widget(bub)
-                self.add_widget(marker)
+                self.add_marker(marker)
 
 
     def init_damages(self,*args):
@@ -164,6 +132,7 @@ class SaveFile(Popup):
 
 class Mainscreen(Screen):
     pass
+
 class Settingsscreen(Screen):
     pass
 
