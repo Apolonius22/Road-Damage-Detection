@@ -44,11 +44,12 @@ from sql_functions import *
 class Map(MapView):
 
     init = False
+    marker = []
     
     def load_points_from_db(self,*args):
             self.init = True
             #self.clear_widgets()
-
+            print(self.walk)
             damagelist = get_all_damages()
 
             
@@ -92,7 +93,8 @@ class Map(MapView):
                 first.add_widget(card)
                 bub.add_widget(first)
                 marker.add_widget(bub)
-                self.widget(marker)
+                self.marker.append(marker)
+                self.add_widget(marker)
 
 
     def init_damages(self,*args):
