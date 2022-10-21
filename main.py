@@ -34,7 +34,7 @@ Window.maximize()
 #################### Other Imports ####################
 
 from functions import *
-from sql_functions import *
+from Mysql_functions import *
 
 
 #################### Screens ####################
