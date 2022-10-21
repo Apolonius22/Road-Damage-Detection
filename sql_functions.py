@@ -29,3 +29,8 @@ def get_all_damages():
 # q = get_all_damages()
 # for i in q:
 #     print(i,"\n")
+
+
+###################################################### online 
+
+
