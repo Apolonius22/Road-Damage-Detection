@@ -44,62 +44,59 @@ from Mysql_functions import *
 class Map(MapView):
 
     init = False
-    marker = []
+    damage_id_on_map_list = []
     
     def load_points_from_db(self,*args):
             self.init = True
-            #self.clear_widgets()
-            print(self.walk)
-            damagelist = get_all_damages()
 
-            
-
-
-
-            for damage in damagelist:
-                marker = MapMarkerPopup(lat = damage.lat,lon = damage.lon,popup_size= (450,250))
-                
-                
-                
-                
-                butt = Button(text = "change",size= (130, 25),size_hint= (None, None))
-                if damage.timestamp != None:
-                    date = f"{damage.timestamp[8:10]}:{damage.timestamp[5:7]}:{damage.timestamp[0:4]}"
-                else:
-                    date = "unknown"
-                text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {damage.lat}\\{damage.lon}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nTimestamp: {date}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
-
-                first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
-                
-                card = MDCard(    size_hint= (None, None),size= ("200dp", "220dp"))
-                
-                second = BoxLayout(orientation = "vertical",padding= "10dp")
-
-
-
+            for damage in get_all_damages():
 
                 
-                
-                bub = Bubble(orientation = "horizontal")
-                img = Image(source= '1.jpg',mipmap= True)
-                
-                second.add_widget(text)
-                second.add_widget(butt)
+                if damage.damage_id not in self.damage_id_on_map_list:
+                    self.damage_id_on_map_list.append(damage.damage_id)
+                    marker = MapMarkerPopup(lat = damage.lat,lon = damage.lon,popup_size= (450,250))
+                    
+                    
+                    butt = Button(text = "change",size= (130, 25),size_hint= (None, None))
+                    if damage.timestamp != None:
+                        date = damage.timestamp
+                    else:
+                        date = "unknown"
+                    text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {damage.lat}\\{damage.lon}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nTimestamp: {date}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
 
-                card.add_widget(second)
+                    first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
 
-                first.add_widget(img)
+                    card = MDCard(size_hint= (None, None),size= ("200dp", "220dp"))
 
-                first.add_widget(card)
-                bub.add_widget(first)
-                marker.add_widget(bub)
-                self.marker.append(marker)
-                self.add_widget(marker)
+                    second = BoxLayout(orientation = "vertical",padding= "10dp")
+
+
+
+                    bub = Bubble(orientation = "horizontal")
+                    img = Image(source = damage.piture_path, mipmap= True)
+
+                    second.add_widget(text)
+                    second.add_widget(butt)
+
+                    card.add_widget(second)
+
+                    first.add_widget(img)
+
+                    first.add_widget(card)
+                    bub.add_widget(first)
+                    marker.add_widget(bub)
+
+                    self.add_widget(marker)
 
 
     def init_damages(self,*args):
         if not self.init:
+            lat = 49
+            lon = 12
+            
+            self.center_on(lat, lon)
             self.load_points_from_db()
+            print("initialize successfully")
 
     def center(self,location,*args):
         try:   

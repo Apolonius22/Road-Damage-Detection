@@ -1,40 +1,43 @@
+from enum import unique
 import sqlite3
 import os
-from functions import Damage
+from functions import *
 import mysql.connector
 
 
 path_to_db = os.path.dirname(__file__) + "\damageapp.sqlite"#r"C:\Users\tobia\Desktop\Studium\case_study_two\test\damageapp.sqlite"
 
 
-def log_damage_local(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
-    conn = sqlite3.connect('damageapp.sqlite')
-    cur = conn.cursor()
-    cur.execute('''INSERT INTO damage (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ? )''' , (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status))
-    conn.commit()
-    conn.close()
+def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,path):
+    previous_damages = get_all_damages()
+    damage_unique = True
+    for damage in previous_damages:
+        if damage.lat == lat and damage.lon == lon:# and damage.damageclass == damageclass:
+            damage_unique = False
+    if damage_unique:
+        mycursor = mydb.cursor()
+        sql = '''INSERT INTO Damage (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,picture) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+        binary_picture = convertToBinaryData(path)
+        val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,binary_picture)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        print("logged successfully")
+    else:
+        print("damage GPS already logged")
 
-def get_all_damages_local():
-    conn = sqlite3.connect(path_to_db)
-    cur = conn.cursor()
-    bar_cursor = cur.execute('SELECT * FROM damage')
-    bar_dict = bar_cursor.fetchall()
-    conn.close()
+def get_all_damages():
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM Damage")
+    myresult = mycursor.fetchall()
     damagelist = []
-    for i in bar_dict:
-        damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8]))
+    for i in myresult:
+        storing_path = current_path +f"\\cache\\{i[0]}.jpg"
+        write_file(i[9], storing_path)
+        damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],storing_path))
     return damagelist
 
-
-
-# q = get_all_damages()
-# for i in q:
-#     print(i,"\n")
-
-
 ########## #online MSQL ####################
-
 
 mydb = mysql.connector.connect(
   host="sql11.freesqldatabase.com",
@@ -42,6 +45,35 @@ mydb = mysql.connector.connect(
   password="fEPPIBNUJ8",
   database="sql11528243"
 )
+
+def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
+    previous_damages = get_all_damages()
+    damage_unique = True
+    for damage in previous_damages:
+        if damage.lat == lat and damage.lon == lon:# and damage.damageclass == damageclass:
+            damage_unique = False
+    if damage_unique:
+        mycursor = mydb.cursor()
+        sql = '''INSERT INTO Damage (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
+        val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        print("logged successfully")
+    else:
+        print("damage GPS already logged")
+
+
+def get_all_damages():
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM Damage")
+    myresult = mycursor.fetchall()
+    damagelist = []
+    for i in myresult:
+        storing_path = current_path +f"\\cache\\{i[0]}.jpg"
+        write_file(i[9], storing_path)
+        damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],storing_path))
+    return damagelist
 
 
 
@@ -54,26 +86,8 @@ def log_user(email, password, points):
     mydb.commit()
 
 
-def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
-    
+def get_all_users():
     mycursor = mydb.cursor()
-    sql = '''INSERT INTO Damage (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
-    val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status)
-    mycursor.execute(sql, val)
-    mydb.commit()
-    print("logged successfully")
-
-def get_all_damages():
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM Damage")
+    mycursor.execute("SELECT * FROM Users")
     myresult = mycursor.fetchall()
-    damagelist = []
-    for i in myresult:
-        damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8]))
-    return damagelist
-
-
-#log_damage(12.5,12.5,1,1,1,"2020-10-31 10:30:22",22,1)
-#for i in get_all_damages():
-#    print(i)
+    return myresult
