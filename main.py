@@ -5,6 +5,7 @@
 
 ####################  Kivy imports ####################
 
+from tkinter import Label
 from kivy_garden.mapview import MapMarkerPopup,MapView
 from kivy.properties import StringProperty
 from kivy.core.window import Window
@@ -19,6 +20,8 @@ from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import FadeTransition,Screen#, NoTransition, CardTransition, ScreenManager
 from kivy.uix.widget import Widget
+from kivy.uix.spinner import Spinner
+from kivy.uix.gridlayout import GridLayout
 
 ####################  Kivymd imports ####################
 from kivymd.app import MDApp
@@ -120,10 +123,11 @@ class ClickableTextFieldRound(MDRelativeLayout):
     hint_text = StringProperty()
 
 class SaveFile(Popup):
-    def Getthepath(self,filepath):
+    def Getthepath(self,filepath,lable):
         global Latestpath
         Latestpath=str(filepath)
         print("path",Latestpath)
+        lable.text = Latestpath
 
 
 
@@ -137,6 +141,14 @@ class Settingsscreen(Screen):
 
 class Analyticsscreen(Screen):
     pass
+
+class Filepicker(GridLayout):
+    
+    def __init__(self, lable, **kwargs):
+        super(Filepicker, self).__init__(**kwargs)
+        filepop = SaveFile(lable)
+        filepop.open()
+        
 
 
 
@@ -170,7 +182,10 @@ class MainApp(MDApp):
         mapview.center(location)
 
 
-        
+    def callback2(self,lable):#),instance):
+        global Latestpath
+        return Filepicker(lable)
+
     
 if __name__ == '__main__':
     MainApp().run()
