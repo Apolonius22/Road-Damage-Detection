@@ -42,7 +42,7 @@ from Mysql_functions import *
 
 #################### Screens ####################
 
-
+latestpath = ""
 
 class Map(MapView):
 
@@ -123,11 +123,12 @@ class ClickableTextFieldRound(MDRelativeLayout):
     hint_text = StringProperty()
 
 class SaveFile(Popup):
-    def Getthepath(self,filepath,lable):
-        global Latestpath
-        Latestpath=str(filepath)
-        print("path",Latestpath)
-        lable.text = Latestpath
+    def Getthepath(self,filepath):
+        global latestpath
+        latestpath=str(filepath)
+        print("path",latestpath)
+        print(self)
+        
 
 
 
@@ -144,9 +145,9 @@ class Analyticsscreen(Screen):
 
 class Filepicker(GridLayout):
     
-    def __init__(self, lable, **kwargs):
+    def __init__(self, **kwargs):
         super(Filepicker, self).__init__(**kwargs)
-        filepop = SaveFile(lable)
+        filepop = SaveFile()
         filepop.open()
         
 
@@ -182,9 +183,14 @@ class MainApp(MDApp):
         mapview.center(location)
 
 
-    def callback2(self,lable):#),instance):
-        global Latestpath
-        return Filepicker(lable)
+    def callback2(self):#),instance):
+        
+        return Filepicker()
+    
+    def callback3(self):#),instance):
+        global latestpath
+        self.root.screens[1].ids.selected_path.text = latestpath
+    
 
     
 if __name__ == '__main__':
