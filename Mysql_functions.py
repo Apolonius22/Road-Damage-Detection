@@ -12,6 +12,14 @@ mydb = mysql.connector.connect(
   database="sql11528243"
 )
 
+#mydb = mysql.connector.connect(
+#  host="roaddamages.mysql.database.azure.com",
+#  user="ElhamAlfuqara@roaddamages",
+#  password="LoomeJust7373",
+#  database="roaddamages",
+#  ssl_ca = r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem"
+#)
+
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
     previous_damages = get_all_damages()
     damage_unique = True
@@ -57,3 +65,6 @@ def get_all_users():
     mycursor.execute("SELECT * FROM Users")
     myresult = mycursor.fetchall()
     return myresult
+
+
+mycursor = mydb.cursor()
