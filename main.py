@@ -133,6 +133,8 @@ class SaveFile(Popup):
 
 
 
+class Loginscreen(Screen):
+    pass
 
 class Mainscreen(Screen):
     pass
@@ -174,6 +176,10 @@ class MainApp(MDApp):
     def switch_to_Settingsscreen(self):
         self.root.transition = FadeTransition(duration=0.5)
         self.root.current = "Settingsscreen"
+        
+    def switch_to_Loginscreen(self):
+        self.root.transition = FadeTransition(duration=0.5)
+        self.root.current = "Loginscreen"
 
 
     def reload_damages(self,mapview):
