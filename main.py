@@ -42,7 +42,11 @@ from Mysql_functions import *
 
 #################### Screens ####################
 
-latestpath = ""
+
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.list import IRightBodyTouch
+from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget
+
 
 class Map(MapView):
 
@@ -123,13 +127,14 @@ class ClickableTextFieldRound(MDRelativeLayout):
     hint_text = StringProperty()
 
 class SaveFile(Popup):
-    def Getthepath(self,filepath):
-        global latestpath
-        latestpath=str(filepath)
-        print("path",latestpath)
-        print(self)
+    def Getthepath(self,filepath,app):
+        
+        app.root.screens[2].selected_path_list.append(str(filepath))
+
         
 
+class YourContainer(IRightBodyTouch, MDBoxLayout):
+    adaptive_width = True
 
 
 
@@ -143,7 +148,20 @@ class Settingsscreen(Screen):
     pass
 
 class Analyticsscreen(Screen):
-    pass
+    latestpath = ""
+    selected_path_list = []
+    def remove_path_from_list(self,test):
+        #print(test)
+        for i in self.ids.file_list.children:
+            if i.id == test:
+                self.selected_path_list.remove(test)
+                self.ids.file_list.remove_widget(i)
+        
+        #self.ids.file_list.remove_widget(test)
+        
+    def add_path_to_list(self):
+        self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
+
 
 class Filepicker(GridLayout):
     
@@ -190,12 +208,10 @@ class MainApp(MDApp):
 
 
     def callback2(self):#),instance):
-        
         return Filepicker()
     
     def callback3(self):#),instance):
-        global latestpath
-        self.root.screens[1].ids.selected_path.text = latestpath
+        pass
     
 
     

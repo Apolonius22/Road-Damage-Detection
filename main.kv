@@ -106,9 +106,10 @@
             text: "Save and continue"
             size_hint: (.09,.09)
             on_press:
-                root.Getthepath(file_path.text)
+                root.Getthepath(file_path.text,app)
                 root.dismiss()
-                app.callback3()
+                #app.callback3()
+                app.root.screens[2].add_path_to_list()
 
         
 
@@ -210,9 +211,8 @@ ScreenManager:
         text_color: 0.2, 0.2, 0.2, 0.8
         icon_color: 0.2, 0.2, 0.2, 0.8 
         on_release:
-            app.root.current= "dataaccep"
-            root.manager.transition.direction= "left"
-
+            app.switch_to_Mainscreen()
+            
         #Widget:
         #    size_hint_y: None
         #    height: 50
@@ -386,46 +386,25 @@ ScreenManager:
                             orientation: "horizontal"
                             BoxLayout:
                                 orientation: "vertical"
-                                MDLabel:
-                                    text:"Welcome to Road Detection Project"
-                                    #pos_hint: {"top": 1}
-                                    font_size:40
-                                    color:'#25a9e8'
-                                    bold: True
-                                    italic: True
-
-                                MDLabel:
-                                    text:"Enter your company name"
-                                    font_size: 18
-                                    color: '#25a9e8'
-                                    size_hint: (1, 0.4)
-                                    halign: 'left'
-                                    valign: 'top'
-                                
-                                MDTextField:
-                                    id: Company
-                                    hint_text: "Company"
-                                    icon_right: 'account'
-                                    multiline: False
 
 
-                                Button:
-                                    text: 'Load'
-                                    size_hint: (1, 0.4)
-                                    on_press:
-                                        #app.switch_to_Mainscreen()
-                                        app.callback2()
-                                    #on_release:
-                                    #    app.callback3(selected_path)
+                                MDList:
+                                    id: file_list
 
-                                MDLabel:
-                                    id : selected_path
-                                    text:""
-                                    font_size: 18
-                                    color: '#25a9e8'
-                                    size_hint: (1, 0.4)
-                                    halign: 'left'
-                                    valign: 'top'
+                                    OneLineListItem:
+                                        id: path_one
+                                        text: "List of selected Video Files for Analysis"
+
+
+
+                                    MDIconButton:
+                                        icon: "plus"
+                                        on_release:
+                                            app.callback2()
+                                            
+                                                
+
+
                                 Button:
                                     text: "Save and Start the detection"
                                     size_hint: (1, 0.4)
