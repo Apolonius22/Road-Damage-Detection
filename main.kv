@@ -382,35 +382,51 @@ ScreenManager:
                         
 
 
-                        BoxLayout:
-                            orientation: "horizontal"
-                            BoxLayout:
-                                orientation: "vertical"
+                        GridLayout:
+                            cols: 2 
+                            #minimum_height: True
+                            
+                            GridLayout:
+                                rows: 3
+                                #minimum_height: True
+
+                                MDLabel:
+                                    text:"To analyze streetdamages in videos klick on the + Icon ans select the Files.\nTo remove the Files klick on the - Icon"
+                                    font_size: 18                                  
+                                    halign: 'left'
+                                    valign: 'top'
+                                    size_hint: None, None
+                                    size: 700, 100
+
+                                MDScrollView:
+                                    MDList:
+                                        id: file_list
+
+                                        OneLineListItem:
+                                            id: path_one
+                                            text: "List of selected Video Files for Analysis"
 
 
-                                MDList:
-                                    id: file_list
 
-                                    OneLineListItem:
-                                        id: path_one
-                                        text: "List of selected Video Files for Analysis"
-
-
-
-                                    MDIconButton:
-                                        icon: "plus"
-                                        on_release:
-                                            app.callback2()
+                                        MDIconButton:
+                                            icon: "plus"
+                                            size_hint: (None, None)
+                                            pos_hint: {'x': .5, 'center_y': .5}
+                                            on_release:
+                                                app.callback2()
                                             
-                                                
+                                RelativeLayout:
+                                    size_hint: None, None
+                                    size: 700, 200
+                                    pos: 200, 200                  
 
 
-                                Button:
-                                    text: "Save and Start the detection"
-                                    size_hint: (1, 0.4)
-                                    bold: True
-                                    font_size:16
-                                    background_color: '#25a9e8'
+                                    Button:
+                                        text: "Save and Start the detection"
+                                        size_hint: (1, 0.4)
+                                        bold: True
+                                        font_size:16
+                                        background_color: '#25a9e8'
 
 
                             MDLabel:

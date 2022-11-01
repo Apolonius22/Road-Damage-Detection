@@ -5,7 +5,7 @@
 
 ####################  Kivy imports ####################
 
-from tkinter import Label
+from tkinter import E, Label
 from kivy_garden.mapview import MapMarkerPopup,MapView
 from kivy.properties import StringProperty
 from kivy.core.window import Window
@@ -45,8 +45,8 @@ from Mysql_functions import *
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import IRightBodyTouch
-from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget
-
+from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget, IconLeftWidgetWithoutTouch
+import filetype
 
 class Map(MapView):
 
@@ -160,7 +160,15 @@ class Analyticsscreen(Screen):
         #self.ids.file_list.remove_widget(test)
         
     def add_path_to_list(self):
-        self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
+        try:
+            kind = filetype.guess(self.selected_path_list[-1])
+        except:
+            self.selected_path_list.pop()
+            return
+        if kind.mime.startswith("video"):
+            self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
+        else:
+            self.selected_path_list.pop()
 
 
 class Filepicker(GridLayout):
