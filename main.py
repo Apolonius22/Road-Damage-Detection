@@ -3,133 +3,107 @@
 
 
 
-#################### imports ####################
+####################  Kivy imports ####################
 
-from cProfile import run
-from kivy.app import App
+from tkinter import E, Label
 from kivy_garden.mapview import MapMarkerPopup,MapView
-from kivy.uix.button import Button
-from kivy.uix.screenmanager import Screen, NoTransition, CardTransition, ScreenManager
+from kivy.properties import StringProperty
 from kivy.core.window import Window
+
+####################  Kivy.uix imports ####################
+
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
-from sql_functions import get_all_damages
 from kivy.uix.button import Button
-from kivymd.uix.button import MDRectangleFlatIconButton
-from kivy.properties import ObjectProperty
-#from kivymd.uix.textfield import MDTextFieldRound
+from kivy.uix.bubble import Bubble
+from kivy.uix.button import Button
+from kivy.uix.image import Image
+from kivy.uix.popup import Popup
+from kivy.uix.screenmanager import FadeTransition,Screen#, NoTransition, CardTransition, ScreenManager
+from kivy.uix.widget import Widget
+from kivy.uix.spinner import Spinner
+from kivy.uix.gridlayout import GridLayout
 
-
-#################### configuration
-from kivymd.app import MDApp
+####################  Kivymd imports ####################
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.behaviors import RoundedRectangularElevationBehavior
-from kivymd.uix.button import MDRectangleFlatIconButton
-from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
-from kivymd.uix.card import MDCardSwipe
-from kivy.properties import StringProperty
 from kivymd.uix.relativelayout import MDRelativeLayout
-from kivy.uix.bubble import Bubble
-from kivy.uix.image import Image
-from kivy.uix.screenmanager import FadeTransition
+
+#################### configuration / Global Variables
 
 Window.maximize()
-damagetypelist=['Pothole','Crack','AlligatorCrack'] 
 
 
+#################### Other Imports ####################
 
+from functions import *
+from Mysql_functions import *
 
-from kivymd.app import MDApp
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDIconButton
-from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
-from kivymd.uix.relativelayout import MDRelativeLayout
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.label import MDLabel
-from kivy.uix.gridlayout import GridLayout
-from kivy.properties import ObjectProperty
-
-from kivymd.uix.button import MDRectangleFlatIconButton
-
-
-from kivy.uix.popup import Popup
-
-from geopy.geocoders import Nominatim
-
-
-def isfloat(num):
-    try:
-        float(num)
-        return True
-    except ValueError:
-        return False
-
-
-def get_adress(Latitude,Longitude):
-    geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(Latitude+","+Longitude)
-
-    return location
 
 #################### Screens ####################
 
 
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.list import IRightBodyTouch
+from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget, IconLeftWidgetWithoutTouch
+import filetype
 
 class Map(MapView):
 
     init = False
+    damage_id_on_map_list = []
     
     def load_points_from_db(self,*args):
-            self.init= True
-            damagelist = get_all_damages()
+            self.init = True
 
-            for damage in damagelist:
-                marker = MapMarkerPopup(lat = damage[1],lon = damage[2],popup_size= (450,250))
-                
-                
-                
-                
-                butt = Button(text = "change",size= (130, 25),size_hint= (None, None))
-                if damage[6] != None:
-                    date = f"{damage[6][8:10]}:{damage[6][5:7]}:{damage[6][0:4]}"
-                else:
-                    date = "unknown"
-                text = MDLabel(text = f"""Damage ID: {damage[0]}\nLocation: {damage[1]}\\{damage[2]}\nType: {damagetypelist[damage[3]]}\nSeverity: {damage[4]}\nWeather: {damage[5]}\nTimestamp: {date}\nUser ID: {damage[7]}\nRepair status: {damage[8]} """)
-
-                first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
-                
-                card = MDCard(    size_hint= (None, None),size= ("200dp", "220dp"))
-                
-                second = BoxLayout(orientation = "vertical",padding= "10dp")
-
-
-
+            for damage in get_all_damages():
 
                 
-                
-                bub = Bubble(orientation = "horizontal")
-                img = Image(source= '1.jpg',mipmap= True)
-                
-                second.add_widget(text)
-                second.add_widget(butt)
+                if damage.damage_id not in self.damage_id_on_map_list:
+                    self.damage_id_on_map_list.append(damage.damage_id)
+                    marker = MapMarkerPopup(lat = damage.lat,lon = damage.lon,popup_size= (450,250))
+                    
+                    
+                    butt = Button(text = "change",size= (130, 25),size_hint= (None, None))
+                    if damage.timestamp != None:
+                        date = damage.timestamp
+                    else:
+                        date = "unknown"
+                    text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {damage.lat}\\{damage.lon}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nTimestamp: {date}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
 
-                card.add_widget(second)
+                    first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
 
-                first.add_widget(img)
+                    card = MDCard(size_hint= (None, None),size= ("200dp", "220dp"))
 
-                first.add_widget(card)
-                bub.add_widget(first)
-                marker.add_widget(bub)
-                self.add_widget(marker)
+                    second = BoxLayout(orientation = "vertical",padding= "10dp")
+
+
+
+                    bub = Bubble(orientation = "horizontal")
+                    img = Image(source = damage.piture_path, mipmap= True)
+
+                    second.add_widget(text)
+                    second.add_widget(butt)
+
+                    card.add_widget(second)
+
+                    first.add_widget(img)
+
+                    first.add_widget(card)
+                    bub.add_widget(first)
+                    marker.add_widget(bub)
+
+                    self.add_widget(marker)
 
 
     def init_damages(self,*args):
         if not self.init:
+            lat = 49
+            lon = 12
+            
+            self.center_on(lat, lon)
             self.load_points_from_db()
+            print("initialize successfully")
 
     def center(self,location,*args):
         try:   
@@ -153,22 +127,57 @@ class ClickableTextFieldRound(MDRelativeLayout):
     hint_text = StringProperty()
 
 class SaveFile(Popup):
-    def Getthepath(self,filepath):
-        global Latestpath
-        Latestpath=str(filepath)
-        print("path",Latestpath)
+    def Getthepath(self,filepath,app):
+        
+        app.root.screens[2].selected_path_list.append(str(filepath))
+
+        
+
+class YourContainer(IRightBodyTouch, MDBoxLayout):
+    adaptive_width = True
 
 
 
-
+class Loginscreen(Screen):
+    pass
 
 class Mainscreen(Screen):
     pass
+
 class Settingsscreen(Screen):
     pass
 
 class Analyticsscreen(Screen):
-    pass
+    latestpath = ""
+    selected_path_list = []
+    def remove_path_from_list(self,test):
+        #print(test)
+        for i in self.ids.file_list.children:
+            if i.id == test:
+                self.selected_path_list.remove(test)
+                self.ids.file_list.remove_widget(i)
+        
+        #self.ids.file_list.remove_widget(test)
+        
+    def add_path_to_list(self):
+        try:
+            kind = filetype.guess(self.selected_path_list[-1])
+        except:
+            self.selected_path_list.pop()
+            return
+        if kind.mime.startswith("video"):
+            self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
+        else:
+            self.selected_path_list.pop()
+
+
+class Filepicker(GridLayout):
+    
+    def __init__(self, **kwargs):
+        super(Filepicker, self).__init__(**kwargs)
+        filepop = SaveFile()
+        filepop.open()
+        
 
 
 
@@ -193,6 +202,10 @@ class MainApp(MDApp):
     def switch_to_Settingsscreen(self):
         self.root.transition = FadeTransition(duration=0.5)
         self.root.current = "Settingsscreen"
+        
+    def switch_to_Loginscreen(self):
+        self.root.transition = FadeTransition(duration=0.5)
+        self.root.current = "Loginscreen"
 
 
     def reload_damages(self,mapview):
@@ -202,7 +215,13 @@ class MainApp(MDApp):
         mapview.center(location)
 
 
-        
+    def callback2(self):#),instance):
+        return Filepicker()
+    
+    def callback3(self):#),instance):
+        pass
+    
+
     
 if __name__ == '__main__':
     MainApp().run()
