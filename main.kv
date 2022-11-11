@@ -13,6 +13,7 @@
         Rectangle:
             pos: self.pos
             size: self.size
+
 <ShadedLabel@Label>:
     size: self.texture_size
     canvas.before:
@@ -75,7 +76,124 @@
 
 
 
+######################################################################
 
+<Areaselection>:
+    orientation:"horizontal"
+    spacing:5
+    adaptive_width: True
+    MDLabel:
+        text: "Area:"
+        pos_hint: {"center_y": .5}
+    MDTextField:
+        hint_text: "Filter on City or GPS"
+        pos_hint: {"center_y": .5}
+
+<Severityselection>:
+
+    orientation:"horizontal"
+    spacing:5
+    
+    MDLabel:
+        text: "Severity:"
+        pos_hint: {"center_y": .5}
+
+    MDChip:
+        text: "Severity 1"
+        icon_left: "speedometer-slow"
+        active: True
+        #selected_chip_color: .21176470535294, .098039627451, 1, 1
+        pos_hint: {"center_y": .5}
+    MDChip:
+        text: "Severity 2"
+        active: True
+        icon_left: "speedometer-medium"
+        #selected_chip_color: .21176470535294, .098039627451, 1, 1
+        pos_hint: {"center_y": .5}
+    MDChip:
+        text: "Severity 3"
+        icon_left: "speedometer"
+        active: True
+        pos_hint: {"center_y": .5}
+
+<Classselection>:
+
+    orientation:"horizontal"
+    spacing:5
+    adaptive_width: True
+    MDLabel:
+        text: "Class:"
+        pos_hint: {"center_y": .5}
+    MDChip:
+        text: "Crack"
+        icon_left: "alpha-c-circle-outline"
+        active: True
+        pos_hint: {"center_y": .5}
+        #selected_chip_color: .21176470535294, .098039627451, 1, 1
+    MDChip:
+        text: "Allig. Crack"
+        active: True
+        icon_left: "alpha-a-circle-outline"
+        pos_hint: {"center_y": .5}
+        #selected_chip_color: .21176470535294, .098039627451, 1, 1
+    MDChip:
+        text: "Pothole"
+        icon_left: "alpha-p-circle-outline"
+        pos_hint: {"center_y": .5}
+        active: True
+
+<Weatherselection>:
+    adaptive_width: True
+    orientation:"horizontal"
+    spacing:5
+    MDLabel:
+        text: "Weather:"
+        pos_hint: {"center_y": .5}
+    MDChip:
+        text: "good"
+        active: True
+        icon_left: "weather-sunny"
+        pos_hint: {"center_y": .5}
+        #selected_chip_color: .21176470535294, .098039627451, 1, 1
+    MDChip:
+        text: "bad"
+        icon_left: "weather-rainy"
+        active: True
+        pos_hint: {"center_y": .5}
+
+
+<Repairstatusselection>:
+    adaptive_width: True
+    orientation:"horizontal"
+    spacing:5
+    MDLabel:
+        text: "repair_status:"
+        pos_hint: {"center_y": .5}
+    MDChip:
+        text: "good"
+        active: True
+        icon_left: "weather-sunny"
+        pos_hint: {"center_y": .5}
+        #selected_chip_color: .21176470535294, .098039627451, 1, 1
+    MDChip:
+        text: "bad"
+        icon_left: "weather-rainy"
+        active: True
+        pos_hint: {"center_y": .5}
+        
+<Userselection>:
+    orientation:"horizontal"
+    spacing:5
+    adaptive_width: True
+    MDLabel:
+        text: "User:"
+        pos_hint: {"center_y": .5}
+    MDTextField:
+        hint_text: "Filter on User ID"
+        pos_hint: {"center_y": .5}
+
+
+###################################################################################################################################
 
 <SaveFile>:
 
@@ -111,12 +229,7 @@
                 #app.callback3()
                 app.root.screens[2].add_path_to_list()
 
-        
 
-
-
-
-                    
 
 ScreenManager:
     
@@ -128,7 +241,7 @@ ScreenManager:
 
 
 <Loginscreen>:
-    name:"StartScreen"
+    name:"Loginscreen"
     FitImage:
         source:"logo2.png"
         y: root.height-self.height
@@ -184,6 +297,11 @@ ScreenManager:
                 on_release:
                     app.switch_to_Mainscreen()
                     #root.manager.transition.direction="left"
+
+
+
+            
+
         BoxLayout:
             orientation:"vertical"
             spacing:5
@@ -198,6 +316,7 @@ ScreenManager:
 
 <Mainscreen>:
     name:"Mainscreen"
+    id: "Mainscreen"
 
     MDScreen:
 
@@ -222,9 +341,9 @@ ScreenManager:
                             on_zoom:
                                 self.zoom = 5 if self.zoom < 5 else self.zoom
                             on_lat:
-                                self.init_damages()
+                                #self.init_damages()
                             on_lon:
-                                self.init_damages()
+                                #self.init_damages()
 
                 
 
@@ -247,15 +366,26 @@ ScreenManager:
                         padding: "10dp"
                         spacing: "5dp"
                         size_hint: None, None
-                        size: "300dp",  "55dp"
-                        pos_hint: {"center_x": .105, 'top': 0.9}
+                        size: "350dp",  "55dp"
+                        pos_hint: {"center_x": .125, 'top': 0.9}
 
-                        ClickableTextFieldRound:
-                            size_hint_x: None
-                            width: "290dp"
-                            hint_text: "Enter City or GPS to focuse on"# e.g cham or 49.2,32.1"
-                            pos_hint: {"center_x": .5, "center_y": .5}
-                            test: mapview
+                        FloatLayout:
+
+                            MDIconButton:
+                                id: filter_button
+                                icon: "menu"
+                                pos_hint: {"center_x": .05,"center_y": .5}
+                                #pos: 0,0#text_field.width - self.width + dp(8), 0
+                                theme_text_color: "Hint"
+                                on_release:
+                                    app.root.current_screen.filter_dropdown.open()
+
+                            ClickableTextFieldRound:
+                                size_hint_x: None
+                                width: "290dp"
+                                hint_text: "Enter City or GPS to focuse on"# e.g cham or 49.2,32.1"
+                                pos_hint: {"center_x": .55, "center_y": .5}
+                                test: mapview
 
                                 
 

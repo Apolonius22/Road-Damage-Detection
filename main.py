@@ -7,7 +7,7 @@
 
 from tkinter import E, Label
 from kivy_garden.mapview import MapMarkerPopup,MapView
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
 
 ####################  Kivy.uix imports ####################
@@ -23,11 +23,14 @@ from kivy.uix.widget import Widget
 from kivy.uix.spinner import Spinner
 from kivy.uix.gridlayout import GridLayout
 
+
 ####################  Kivymd imports ####################
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
+from kivymd.uix.menu import MDDropdownMenu
+
 
 #################### configuration / Global Variables
 
@@ -37,7 +40,7 @@ Window.maximize()
 #################### Other Imports ####################
 
 from functions import *
-from Mysql_functions import *
+#from Mysql_functions import *
 
 
 #################### Screens ####################
@@ -126,15 +129,25 @@ class ClickableTextFieldRound(MDRelativeLayout):
     text = StringProperty()
     hint_text = StringProperty()
 
+
+class Areaselection(MDBoxLayout):
+    pass
+class Severityselection(MDBoxLayout):
+    pass
+class Classselection(MDBoxLayout):
+    pass
+class Weatherselection(MDBoxLayout):
+    pass
+class Userselection(MDBoxLayout):
+    pass
+class Repairstatusselection(MDBoxLayout):
+    pass
+
 class SaveFile(Popup):
     def Getthepath(self,filepath,app):
         
         app.root.screens[2].selected_path_list.append(str(filepath))
 
-        
-
-class YourContainer(IRightBodyTouch, MDBoxLayout):
-    adaptive_width = True
 
 
 
@@ -142,7 +155,51 @@ class Loginscreen(Screen):
     pass
 
 class Mainscreen(Screen):
-    pass
+    filter_dropdown = ObjectProperty()
+
+    def on_enter(self):
+        menu_items = [
+            {
+            "viewclass": "MDLabel",
+            "text": "Filter Damages:",
+            #"icon": "language-python",
+            "on_release": lambda x="City": self.menu_callback(x),
+            },
+            {
+            "viewclass": "Areaselection",
+            },
+            {
+            "viewclass": "Severityselection",
+            },
+            {
+            "viewclass": "Classselection",
+            },
+            {
+            "viewclass": "Weatherselection",
+            },
+            {
+            "viewclass": "Userselection",
+            },
+            {
+            "viewclass": "Repairstatusselection",
+            },
+            {
+            "viewclass": "MDTextField",
+            "hint_text": f"Filter on City",
+            #"icon": "language-python",
+            "on_release": lambda x="City": self.menu_callback(x),
+            }#for i in range(5)
+        ]
+        self.filter_dropdown = MDDropdownMenu(
+            width_mult = 7,
+            caller=self.ids.filter_button,
+            items=menu_items
+            )
+
+        
+
+    def menu_callback(self,text_of_the_option):
+        print(text_of_the_option)
 
 class Settingsscreen(Screen):
     pass
@@ -150,6 +207,7 @@ class Settingsscreen(Screen):
 class Analyticsscreen(Screen):
     latestpath = ""
     selected_path_list = []
+
     def remove_path_from_list(self,test):
         #print(test)
         for i in self.ids.file_list.children:
@@ -184,7 +242,7 @@ class Filepicker(GridLayout):
 #################### Main App ####################
 
 class MainApp(MDApp):
-    
+   
 
 
     def build(self):
@@ -220,6 +278,8 @@ class MainApp(MDApp):
     
     def callback3(self):#),instance):
         pass
+
+
     
 
     

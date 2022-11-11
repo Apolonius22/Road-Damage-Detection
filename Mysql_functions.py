@@ -5,20 +5,38 @@ from functions import *
 import mysql.connector
 
 
-mydb = mysql.connector.connect(
-  host="sql11.freesqldatabase.com",
-  user="sql11528243",
-  password="fEPPIBNUJ8",
-  database="sql11528243"
-)
-
 #mydb = mysql.connector.connect(
-#  host="roaddamages.mysql.database.azure.com",
-#  user="ElhamAlfuqara@roaddamages",
-#  password="LoomeJust7373",
-#  database="roaddamages",
-#  ssl_ca = r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem"
+#  host="sql11.freesqldatabase.com",
+#  user="sql11528243",
+#  password="fEPPIBNUJ8",
+#  database="sql11528243"
 #)
+
+config = {
+  'host':'roaddamages2.mysql.database.azure.com',
+  'user':'CaseStudyMSS2',
+  'password':'BestTeam123',
+  'database':'roaddamages',
+  'client_flags': [mysql.connector.ClientFlag.SSL],
+  'ssl_ca': 'C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem'
+}
+
+
+try:
+   conn = mysql.connector.connect(**config)
+   print("Connection established")
+except mysql.connector.Error as err:
+  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+    print("Something is wrong with the user name or password")
+  elif err.errno == errorcode.ER_BAD_DB_ERROR:
+    print("Database does not exist")
+  else:
+    print(err)
+else:
+  cursor = conn.cursor()
+
+mycursor = mydb.cursor()
+
 
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
     previous_damages = get_all_damages()
@@ -67,4 +85,3 @@ def get_all_users():
     return myresult
 
 
-mycursor = mydb.cursor()
