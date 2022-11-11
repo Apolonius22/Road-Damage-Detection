@@ -3,6 +3,7 @@ import sqlite3
 import os
 from functions import *
 import mysql.connector
+from mysql.connector import errorcode
 
 
 #mydb = mysql.connector.connect(
@@ -18,12 +19,12 @@ config = {
   'password':'BestTeam123',
   'database':'roaddamages',
   'client_flags': [mysql.connector.ClientFlag.SSL],
-  'ssl_ca': 'C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem'
+  'ssl_ca': r'C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem'
 }
 
 
 try:
-   conn = mysql.connector.connect(**config)
+   mydb = mysql.connector.connect(**config)
    print("Connection established")
 except mysql.connector.Error as err:
   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -33,9 +34,9 @@ except mysql.connector.Error as err:
   else:
     print(err)
 else:
-  cursor = conn.cursor()
+  mycursor = mydb.cursor()
 
-mycursor = mydb.cursor()
+
 
 
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
@@ -46,7 +47,7 @@ def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, rep
             damage_unique = False
     if damage_unique:
         mycursor = mydb.cursor()
-        sql = '''INSERT INTO Damage (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status) 
+        sql = '''INSERT INTO registered_damages (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
         val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status)
         mycursor.execute(sql, val)
@@ -58,7 +59,7 @@ def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, rep
 
 def get_all_damages():
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM Damage")
+    mycursor.execute("SELECT * FROM registered_damages")
     myresult = mycursor.fetchall()
     damagelist = []
     for i in myresult:
