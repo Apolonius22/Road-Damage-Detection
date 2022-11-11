@@ -523,9 +523,8 @@ WindowManager:
         spacing:15
         padding:10
         MDTopAppBar:
+            title:"Take Image"
             icon: "calendar"
             mode: "end"
             elevation: 12
-            left_action_items: [["menu",lambda *args : setattr(root.manager, "current", "MainScreen"),'Back']]
-
-
+            left_action_items: [["keyboard-backspace",lambda *args : setattr(root.manager, "current", "MainScreen"),'Back']]
