@@ -4,6 +4,8 @@ import os
 from functions import *
 import mysql.connector
 from mysql.connector import errorcode
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 
 
 #mydb = mysql.connector.connect(
@@ -84,5 +86,28 @@ def get_all_users():
     mycursor.execute("SELECT * FROM Users")
     myresult = mycursor.fetchall()
     return myresult
+###################################################################
+def CheckUserName(user_name):
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT * FROM users WHERE user_name = %(username)s',{'username' : user_name})
+    checkUsername = mycursor.fetchall()
+    User_unique=True
+    print(checkUsername)
+    if len(checkUsername) !=0 :
+      print("User Name exists")
+      pop = Popup(title='Invalid Username', title_align = 'center',
+                  content=Label(text='The username is already taken.\nPlease try another one'),
+                  size_hint=(0.8, 0.3), size=(1,1),
+                  )
+      pop.open()
+      User_unique=False
+    return User_unique
 
+def UserRegistration(user_name, password, birthday, gender, residence, employment_status,total_gained_points):
+      mycursor = mydb.cursor()
+      sql="INSERT INTO users (user_name, password, birthday, gender, residence, employment_status,total_gained_points) VALUES (%s, %s, %s, %s, %s, %s,%s)"
+      val=(user_name, password, birthday, gender, residence, employment_status,total_gained_points)
+      mycursor.execute(sql, val)
+      mydb.commit()
+      print("Successfully registered")
 

@@ -36,9 +36,9 @@ from cloudmersive_validate_api_client.rest import ApiException
 import cv2
 import numpy
 
-
-
-
+import sys
+sys.path.append (r'C:\Users\User\OneDrive\Desktop\Case study2')
+from Mysql_functions import *
 #Building the App
 class RoadDamages(MDApp):
     def __init__(self, **kwargs):
@@ -96,13 +96,35 @@ class SignUp(Screen):
     def Retired(self):
         self.ids.employment_Status.text="Retired"
 
+    def CollectDate(self):
+        global Username
+        Username= self.ids.username.text
+        global UserPassword
+        UserPassword=self.ids.password.text
+        global UserBirthday
+        UserBirthday=self.ids.birthday.text
+        global UserGender
+        UserGender=self.ids.gender.text
+        global UserResidence
+        UserResidence=self.ids.residence.text
+        global UserEmpStatus
+        UserEmpStatus=self.ids.employment_Status.text
+        print(Username)
+        UserNameCon=CheckUserName(Username)
+        if UserNameCon:
+            self.manager.current="PolicyandTerms"
+            self.manager.transition.direction="left"
+            UserNameCon=True
+
 class PolicyandTerms(Screen):
     def checkbox_click(self,instanse,value):
         if value==False:
             self.ids.ConfirmB.disabled=True
         else:
             self.ids.ConfirmB.disabled=False
-
+    def RegisterInfo(self):
+        total_gained_points=int(0)
+        UserRegistration(Username,UserPassword,UserBirthday,UserGender,UserResidence,UserEmpStatus,total_gained_points)
 class MainScreen(Screen):
     pass 
 

@@ -62,6 +62,7 @@ WindowManager:
                 pos_hint: {'center_x': 0.5}
                 size_hint_y: None
                 font_size:16
+                md_bg_color: 71/255,71/255,107/255,0.8
                 on_release:
                     app.root.current="SignIn"
                     root.manager.transition.direction="left"
@@ -73,6 +74,7 @@ WindowManager:
                 pos_hint: {'center_x': 0.5}
                 bold: True
                 font_size:16
+                md_bg_color: 71/255,71/255,107/255,0.8
                 on_release:
                     app.root.current="SignUp"
                     root.manager.transition.direction="left"
@@ -96,9 +98,9 @@ WindowManager:
     MDFloatingActionButton:
         icon: "arrow-left"
         pos_hint: {'center_x': 0.1,'center_y': 0.6}
-        md_bg_color: "white"
-        icon_color: "grey"
-        line_color: "white"
+        md_bg_color: 71/255,71/255,107/255,0.5
+        icon_color: "white"
+        line_color: 71/255,71/255,107/255,0.5
         on_release:
             app.root.current="StartScreen"
             root.manager.transition.direction="right"
@@ -141,6 +143,7 @@ WindowManager:
                 size_hint_x:0.8
                 pos_hint: {'center_x': 0.5}
                 size_hint_y: None
+                md_bg_color: 71/255,71/255,107/255,0.8
                 font_size:16
                 on_release:
                     app.root.current="MainScreen"
@@ -374,6 +377,7 @@ WindowManager:
             orientation: "horizontal"
             value: 50
             size_hint_y:None
+            color:71/255,71/255,107/255,0.3
         MDLabel:
             text:"BECOME A HOLOPHILE MEMBER"
             font_size:14
@@ -391,24 +395,27 @@ WindowManager:
             GridLayout:
                 cols:1
                 padding:15
-                spacing:15
+                spacing:20
                 size_hint_y: None
                 height: self.minimum_height
                 adaptive_height: True
                 MDTextField:
+                    id: username
                     hint_text:"User name"
                     helper_text: "Maximum 15 characters in length"
                     mode: "rectangle"
                     max_text_length: 15
                 MDTextField:
+                    id: password
                     hint_text:"Password"
                     password: True
                     mode: "rectangle"
                 MDTextField:
-                    hint_text:"Age"
-                    input_filter: 'int'
-                    helper_text:"only numbers e.g: 29"
+                    id: birthday
+                    hint_text: 'Birthday'
+                    helper_text: "yyyy-mm-dd"
                     mode: "rectangle"
+                    helper_text_mode: "persistent"
                 MDTextField:
                     id: gender
                     hint_text: "Gender"
@@ -418,7 +425,8 @@ WindowManager:
                     on_focus: root.Genderdisplay_dropdown()
                     mode: "rectangle"
                 MDTextField:
-                    hint_text: 'Area'
+                    id: residence
+                    hint_text: 'Residence'
                     hint_text_color: 1,1,1,1
                     icon_left: 'magnify'
                     mode: "rectangle"
@@ -441,6 +449,7 @@ WindowManager:
                         size_hint_x:0.8
                         pos_hint: {'center_x': 0.5}
                         size_hint_y: None
+                        md_bg_color: 71/255,71/255,107/255,0.8
                         on_release:
                             app.root.current="StartScreen"
                             root.manager.transition.direction="right"
@@ -449,9 +458,10 @@ WindowManager:
                         size_hint_x:0.8
                         pos_hint: {'center_x': 0.5}
                         size_hint_y: None 
+                        md_bg_color: 71/255,71/255,107/255,0.8
                         on_release:
-                            app.root.current="PolicyandTerms"
-                            root.manager.transition.direction="left"
+                            root.CollectDate()
+                            #root.CheckInfo()
                 MDLabel:
                     text:''
 <PolicyandTerms>:
@@ -462,6 +472,7 @@ WindowManager:
             orientation: "horizontal"
             value: 100
             size_hint_y:None
+            color:71/255,71/255,107/255,0.3
         MDLabel:
             text:"BECOME A HOLOPHILE MEMBER"
             font_size:14
@@ -479,7 +490,7 @@ WindowManager:
             GridLayout:
                 cols:1
                 padding:20
-                spacing:80
+                spacing:20
                 size_hint_y: None
                 height: self.minimum_height
                 adaptive_height: True
@@ -490,10 +501,16 @@ WindowManager:
                     font_size:12
                     halign:"left"
                     color: "grey" 
+                MDLabel:
+                    text:""
+                MDLabel:
+                    text:""
+                MDLabel:
+                    text:""
                 GridLayout:
                     cols:2
                     spacing: 20
-                    padding:10
+                    padding:5
                     MDCheckbox:
                         id: CheckBox1
                         on_active:
@@ -505,6 +522,7 @@ WindowManager:
                 MDFillRoundFlatButton:
                     text: "Decline"
                     size_hint: (0.5,0.5)
+                    md_bg_color: 71/255,71/255,107/255,0.8
                     on_release:
                         app.root.current="StartScreen"
                         root.manager.transition.direction="right"
@@ -513,9 +531,11 @@ WindowManager:
                     text: "Confirm"
                     size_hint: (0.5,0.5)
                     disabled: True
+                    md_bg_color: 71/255,71/255,107/255,0.8
                     on_release:
                         app.root.current="SignIn"
                         root.manager.transition.direction="right"
+                        root.RegisterInfo()
 <ImageCaptions>:
     name:"ImageCaptions"
     GridLayout:
