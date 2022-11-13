@@ -23,6 +23,7 @@ config = {
 }
 
 
+
 try:
    mydb = mysql.connector.connect(**config)
    print("Connection established")
@@ -86,5 +87,5 @@ def get_all_users():
     return myresult
 
 
-#log_damage(48, 10, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
-print(get_all_damages()[0])
+#log_damage(48.2, 10, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
+#print(get_all_damages()[0])
