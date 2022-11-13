@@ -39,7 +39,7 @@ else:
 
 
 
-def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status):
+def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image):
     previous_damages = get_all_damages()
     damage_unique = True
     for damage in previous_damages:
@@ -47,9 +47,9 @@ def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, rep
             damage_unique = False
     if damage_unique:
         mycursor = mydb.cursor()
-        sql = '''INSERT INTO registered_damages (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
-        val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status)
+        sql = '''INSERT INTO registered_damages (lat, lon, damage_class, severity_class, weather, timestamp, user_id, repair_status,image) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+        val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image)
         mycursor.execute(sql, val)
         mydb.commit()
         print("logged successfully")
@@ -64,7 +64,7 @@ def get_all_damages():
     damagelist = []
     for i in myresult:
         storing_path = current_path +f"\\cache\\{i[0]}.jpg"
-        write_file(i[9], storing_path)
+        #write_file(i[9], storing_path)
         damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],storing_path))
     return damagelist
 
@@ -86,3 +86,5 @@ def get_all_users():
     return myresult
 
 
+#log_damage(48, 10, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
+print(get_all_damages()[0])
