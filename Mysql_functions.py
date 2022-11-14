@@ -99,9 +99,11 @@ def get_all_users():
     mycursor.close()
     mydb.close()
     return myresult
+
 ###################################################################
+
 def CheckUserName(user_name):
-    mycursor = mydb.cursor()
+    mycursor, mydb = get_cursor()
     mycursor.execute('SELECT * FROM users WHERE user_name = %(username)s',{'username' : user_name})
     checkUsername = mycursor.fetchall()
     User_unique=True
@@ -114,15 +116,19 @@ def CheckUserName(user_name):
                   )
       pop.open()
       User_unique=False
+      mycursor.close()
+      mydb.close()
     return User_unique
 
 def UserRegistration(user_name, password, birthday, gender, residence, employment_status,total_gained_points):
-      mycursor = mydb.cursor()
+      mycursor, mydb = get_cursor()
       sql="INSERT INTO users (user_name, password, birthday, gender, residence, employment_status,total_gained_points) VALUES (%s, %s, %s, %s, %s, %s,%s)"
       val=(user_name, password, birthday, gender, residence, employment_status,total_gained_points)
       mycursor.execute(sql, val)
       mydb.commit()
       print("Successfully registered")
+      mycursor.close()
+      mydb.close()
 
 log_damage(49.5, 11.5, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
 for damage in get_all_damages():
