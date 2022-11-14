@@ -52,4 +52,10 @@ def write_file(data, filename):
     with open(filename, 'wb') as file:
         file.write(data)
 
+
+
+def detect_with_yolo():
+    pass
+    
+
 ###### This is a Test#########
