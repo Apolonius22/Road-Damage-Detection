@@ -86,38 +86,39 @@
         text: "Area:"
         pos_hint: {"center_y": .5}
     MDTextField:
+        id: areaselection
         hint_text: "Filter on City or GPS"
         pos_hint: {"center_y": .5}
 
 <Severityselection>:
-
     orientation:"horizontal"
     spacing:5
-    
     MDLabel:
         text: "Severity:"
         pos_hint: {"center_y": .5}
 
     MDChip:
+        id: severityselection_good
         text: "Severity 1"
         icon_left: "speedometer-slow"
         active: True
         #selected_chip_color: .21176470535294, .098039627451, 1, 1
         pos_hint: {"center_y": .5}
     MDChip:
+        id: severityselection_medium
         text: "Severity 2"
         active: True
         icon_left: "speedometer-medium"
         #selected_chip_color: .21176470535294, .098039627451, 1, 1
         pos_hint: {"center_y": .5}
     MDChip:
+        id: severityselection_bad
         text: "Severity 3"
         icon_left: "speedometer"
         active: True
         pos_hint: {"center_y": .5}
 
 <Classselection>:
-
     orientation:"horizontal"
     spacing:5
     adaptive_width: True
@@ -125,18 +126,21 @@
         text: "Class:"
         pos_hint: {"center_y": .5}
     MDChip:
+        id: classselection_crack
         text: "Crack"
         icon_left: "alpha-c-circle-outline"
         active: True
         pos_hint: {"center_y": .5}
         #selected_chip_color: .21176470535294, .098039627451, 1, 1
     MDChip:
+        id: classselection_allicrack
         text: "Allig. Crack"
         active: True
         icon_left: "alpha-a-circle-outline"
         pos_hint: {"center_y": .5}
         #selected_chip_color: .21176470535294, .098039627451, 1, 1
     MDChip:
+        id: classselection_pothole
         text: "Pothole"
         icon_left: "alpha-p-circle-outline"
         pos_hint: {"center_y": .5}
@@ -150,12 +154,14 @@
         text: "Weather:"
         pos_hint: {"center_y": .5}
     MDChip:
+        id: weatherselection_good
         text: "good"
         active: True
         icon_left: "weather-sunny"
         pos_hint: {"center_y": .5}
         #selected_chip_color: .21176470535294, .098039627451, 1, 1
     MDChip:
+        id: weatherselection_bad
         text: "bad"
         icon_left: "weather-rainy"
         active: True
@@ -163,6 +169,7 @@
 
 
 <Repairstatusselection>:
+
     adaptive_width: True
     orientation:"horizontal"
     spacing:5
@@ -170,12 +177,15 @@
         text: "repair_status:"
         pos_hint: {"center_y": .5}
     MDChip:
+        id: repairstatusselection_good
         text: "good"
-        active: True
         icon_left: "weather-sunny"
         pos_hint: {"center_y": .5}
+        active: True
+
         #selected_chip_color: .21176470535294, .098039627451, 1, 1
     MDChip:
+        id: repairstatusselection_bad
         text: "bad"
         icon_left: "weather-rainy"
         active: True
@@ -189,6 +199,7 @@
         text: "User:"
         pos_hint: {"center_y": .5}
     MDTextField:
+        id: userselection
         hint_text: "Filter on User ID"
         pos_hint: {"center_y": .5}
 

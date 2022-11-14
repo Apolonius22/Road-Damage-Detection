@@ -22,8 +22,15 @@ class Damage:
         self.piture_path = piture_path
 
     def __str__(self):
-        return f"Damage_ID:{self.damage_id}\nGPS:{self.lat}\\{self.lon}\nClass:{self.damageclass}\nSeverity:{self.severity}\nWeather:{self.weather}\nTimestamp:{self.timestamp}\nUser_id:{self.user_id}\nRepair_status:{self.repair_status}\nPath_to_picture:{self.piture_path}"
+        return f"Damage_ID:{self.damage_id}\nGPS:{self.lat}\\{self.lon}\nClass:{self.damageclass}\nSeverity:{self.severity}\nWeather:{self.weather}\nTimestamp:{self.timestamp}\nUser_id:{self.user_id}\nRepair_status:{self.repair_status}\nPath_to_picture:{self.piture_path}\n"
 
+class Filter():
+    areaselection = None
+    severityselection = {"good":True,"medium":True,"bad":True}
+    classselection = {'Pothole','Crack','AlligatorCrack'}
+    weatherselection = {"good":True,"bad":True}
+    userselection = None
+    repairstatusselection = {"good":True,"bad":True}
 
 
 def isfloat(num):
