@@ -128,6 +128,11 @@ class Map(MapView):
         except:
             pass
 
+
+    def print_points_from_db(self):
+        for damage in get_all_damages():
+            print(damage)
+
         
             
 class ClickableTextFieldRound(MDRelativeLayout):
@@ -272,7 +277,7 @@ class MainApp(MDApp):
 
 
     def reload_damages(self,mapview):
-        mapview.load_points_from_db()
+        mapview.print_points_from_db()
 
     def center_map(self,mapview,location):
         mapview.center(location)
