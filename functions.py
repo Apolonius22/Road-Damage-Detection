@@ -54,7 +54,8 @@ def write_file(data, filename):
 
 
 
-def detect_with_yolo:
+def detect_with_yolo():
+    pass
     
 
 ###### This is a Test#########

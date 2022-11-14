@@ -356,7 +356,7 @@ ScreenManager:
                             left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
                             right_action_items:
                                 [
-                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                                ["reload", lambda x: mapview.load_points_from_db(), "reload", "reload"],
                                 ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
                                 ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
                                 ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"]
