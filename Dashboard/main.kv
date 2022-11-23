@@ -2,6 +2,16 @@
 #:import MapSource kivy_garden.mapview.MapSource
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
+ScreenManager:
+    Loginscreen:
+    Mainscreen:
+    Analyticsscreen:
+    Settingsscreen:
+    Complainscreen:
+
+
+
+
 <Toolbar@BoxLayout>:
     size_hint_y: None
     height: '48dp'
@@ -242,12 +252,7 @@
 
 
 
-ScreenManager:
-    
-    Loginscreen:
-    Mainscreen:
-    Analyticsscreen:
-    Settingsscreen:
+
     #transition: FadeTransition()
 
 
@@ -370,7 +375,8 @@ ScreenManager:
                                 ["reload", lambda x: mapview.load_points_from_db(), "reload", "reload"],
                                 ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
                                 ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
-                                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"]
+                                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
+                                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
                                 ]
                     MDCard:
                         orientation: "vertical"
@@ -484,6 +490,7 @@ ScreenManager:
                                 ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
                                 ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
                                 ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
                                 ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
                                 ]
 
@@ -544,6 +551,8 @@ ScreenManager:
                                         bold: True
                                         font_size:16
                                         background_color: '#25a9e8'
+                                        on_release: 
+                                            app.root.screens[2].run_detection()
 
 
                             FitImage:
@@ -600,3 +609,90 @@ ScreenManager:
                         icon: "information-outline"
                         text: "Label"
 
+
+
+
+<Complainscreen>:
+    name:"Complainscreen"
+    
+    MDScreen:
+
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+                    RelativeLayout:
+
+
+                        MDTopAppBar:
+                            title: "Complain screen"
+                            elevation: 4
+                            pos_hint: {"top": 1}
+                            md_bg_color: "#e7e4c0"
+                            specific_text_color: "#4a4939"
+                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                            right_action_items:
+                                [
+                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
+                                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
+                                ]
+
+                    MDCard:
+                        id: Card
+                        orientation: "vertical"
+                        padding: "10dp"
+                        spacing: "5dp"
+                        size_hint: None, None
+                        size: "1500dp",  "690dp"
+                        pos_hint: {"center_x": .5,"center_y": .46}
+                        md_bg_color: [0,0.5,0.5, 0.3] 
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                radius: (0, 16, 16, 0)
+
+                MDNavigationDrawerMenu:
+
+                    MDNavigationDrawerHeader:
+                        title: "Header title"
+                        title_color: "#4a4939"
+                        text: "Header text"
+                        spacing: "4dp"
+                        padding: "12dp", 0, 0, "56dp"
+
+                    MDNavigationDrawerLabel:
+                        text: "User "
+
+                    DrawerClickableItem:
+                        icon: "gmail"
+                        right_text: "+99"
+                        text_right_color: "#4a4939"
+                        text: "LogIn"
+
+                    DrawerClickableItem:
+                        icon: "send"
+                        text: "register"
+
+                    MDNavigationDrawerDivider:
+
+                    MDNavigationDrawerLabel:
+                        text: "Report"
+
+                    DrawerClickableItem:
+                        icon: "file-document"
+                        text: "create report"
+
+                    MDNavigationDrawerLabel:
+                        text: "Labels"
+
+                    DrawerLabelItem:
+                        icon: "information-outline"
+                        text: "Label"
+
+                    DrawerLabelItem:
+                        icon: "information-outline"
+                        text: "Label"

@@ -46,6 +46,7 @@ sys.path.append('../Road-Damage-Detection')
 
 from functions import *
 from Mysql_functions import *
+from run_yolo import run_rdd
 
 
 #################### Screens ####################
@@ -138,6 +139,32 @@ class Map(MapView):
         for damage,marker in self.damage_id_on_map_list:
             
             if damage.damageclass not in damage_filter.classselection:
+                self.remove_widget(marker)
+
+            if damage.severity not in damage_filter.severityselection:
+                self.remove_widget(marker)
+
+            if damage.weather not in damage_filter.weatherselection:
+                self.remove_widget(marker)
+
+            if damage.user_id not in damage_filter.userselection and len(damage_filter.userselection) > 0:
+                self.remove_widget(marker)
+
+            if damage.repair_status not in damage_filter.repairstatusselection:
+                self.remove_widget(marker)
+
+
+
+            
+            area_filter = False
+            if len(damage_filter.areaselection) > 0:
+                area_filter = True
+                area = get_adress(damage.lat,damage.lon)
+                for location in damage_filter.areaselection:
+                    if location.lower() in area.address.lower():
+                        area_filter = False
+
+            if area_filter:
                 self.remove_widget(marker)
 
 
@@ -239,14 +266,28 @@ class Mainscreen(Screen):
 
         for filter in self.filter_dropdown.children[0].children[0].children[0].children:
 
+
             if filter.id == "areaselection":
-                self.damage_filter.areaselection = filter.ids.areaselection.text                
+                self.damage_filter.areaselection = []
+                if len(filter.ids.areaselection.text) > 0:
+                    all_areas = filter.ids.areaselection.text.split(",")
+                    for area in all_areas:
+                        self.damage_filter.areaselection.append(area)               
                 print(self.damage_filter.areaselection)
 
             if filter.id == "severityselection":
-                self.damage_filter.severityselection.update({"good":filter.ids.severityselection_good.active})
-                self.damage_filter.severityselection.update({"medium":filter.ids.severityselection_medium.active})
-                self.damage_filter.severityselection.update({"bad":filter.ids.severityselection_bad.active})
+                if filter.ids.severityselection_good.active:
+                    self.damage_filter.severityselection.add(1)
+                else:
+                    self.damage_filter.severityselection.discard(1)
+                if filter.ids.severityselection_medium.active:
+                    self.damage_filter.severityselection.add(2)
+                else:
+                    self.damage_filter.severityselection.discard(2)
+                if filter.ids.severityselection_bad.active:
+                    self.damage_filter.severityselection.add(3)
+                else:
+                    self.damage_filter.severityselection.discard(3)
                 print(self.damage_filter.severityselection)
 
             if filter.id == "classselection":
@@ -264,23 +305,45 @@ class Mainscreen(Screen):
                     self.damage_filter.classselection.discard('Pothole')
                 print(self.damage_filter.classselection)
 
-
             if filter.id == "weatherselection":
-                self.damage_filter.weatherselection.update({"good":filter.ids.weatherselection_good.active})
-                self.damage_filter.weatherselection.update({"bad":filter.ids.weatherselection_bad.active})
+                if filter.ids.weatherselection_good.active:
+                    self.damage_filter.weatherselection.add(1)
+                else:
+                    self.damage_filter.weatherselection.discard(1)
+                if filter.ids.weatherselection_bad.active:
+                    self.damage_filter.weatherselection.add(0)
+                else:
+                    self.damage_filter.weatherselection.discard(0)
                 print(self.damage_filter.weatherselection)
             
             if filter.id == "repairstatusselection":
-                self.damage_filter.repairstatusselection.update({"good":filter.ids.repairstatusselection_good.active})
-                self.damage_filter.repairstatusselection.update({"bad":filter.ids.repairstatusselection_bad.active})
+                if filter.ids.repairstatusselection_good.active:
+                    self.damage_filter.repairstatusselection.add(1)
+                else:
+                    self.damage_filter.repairstatusselection.discard(1)
+                if filter.ids.repairstatusselection_bad.active:
+                    self.damage_filter.repairstatusselection.add(0)
+                else:
+                    self.damage_filter.repairstatusselection.discard(0)
                 print(self.damage_filter.repairstatusselection)
 
             if filter.id == "userselection":
-                self.damage_filter.userselection = filter.ids.userselection.text                
+                self.damage_filter.userselection = []
+                if len(filter.ids.userselection.text) > 0:
+                    all_users = filter.ids.userselection.text.split(",")
+                    for user in all_users:
+                        try:
+                            user = int(user)
+                            self.damage_filter.userselection.append(user)
+                        except:
+                            continue               
                 print(self.damage_filter.userselection)
         self.ids.mapview.apply_filter(self.damage_filter)
 
 class Settingsscreen(Screen):
+    pass
+
+class Complainscreen(Screen):
     pass
 
 class Analyticsscreen(Screen):
@@ -306,6 +369,11 @@ class Analyticsscreen(Screen):
             self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
         else:
             self.selected_path_list.pop()
+
+    def run_detection(self):
+        if len(self.selected_path_list) > 0:
+            for file in self.selected_path_list:
+                run_rdd(file)
 
 
 class Filepicker(GridLayout):
@@ -344,6 +412,9 @@ class MainApp(MDApp):
         self.root.transition = FadeTransition(duration=0.5)
         self.root.current = "Loginscreen"
 
+    def switch_to_Complainscreen(self):
+        self.root.transition = FadeTransition(duration=0.5)
+        self.root.current = "Complainscreen"
 
     def reload_damages(self,mapview):
         mapview.print_points_from_db()

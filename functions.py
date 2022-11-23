@@ -25,12 +25,12 @@ class Damage:
         return f"Damage_ID:{self.damage_id}\nGPS:{self.lat}\\{self.lon}\nClass:{self.damageclass}\nSeverity:{self.severity}\nWeather:{self.weather}\nTimestamp:{self.timestamp}\nUser_id:{self.user_id}\nRepair_status:{self.repair_status}\nPath_to_picture:{self.piture_path}\n"
 
 class Filter():
-    areaselection = None
-    severityselection = {"good":True,"medium":True,"bad":True}
+    areaselection = []
+    severityselection = {1,2,3}
     classselection = {'Pothole','Crack','AlligatorCrack'}
-    weatherselection = {"good":True,"bad":True}
-    userselection = None
-    repairstatusselection = {"good":True,"bad":True}
+    weatherselection = {1,0}
+    userselection = []
+    repairstatusselection = {1,0}
 
 
 def isfloat(num):
@@ -43,7 +43,7 @@ def isfloat(num):
 
 def get_adress(Latitude,Longitude):
     geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(Latitude+","+Longitude)
+    location = geolocator.reverse(str(Latitude) + "," + str(Longitude))
 
     return location
 
