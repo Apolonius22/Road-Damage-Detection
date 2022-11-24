@@ -45,7 +45,7 @@ def get_cursor():
 
 
 
-
+                                                        #YYYY-MM-DD HH-MM-SS###########
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image):
     mycursor, mydb = get_cursor()
     if mycursor != None or mydb != None: 
@@ -153,9 +153,10 @@ def UserRegistration(user_name, password, birthday, gender, residence, employmen
 
 ############### debugging code ##############
 if False: 
-
-    log_damage(49.5, 11.5, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
-    print(CheckUserName("hans"))
-    for damage in get_all_damages():
-                print(damage)
-    print(get_all_users())
+###############################################YYYY-MM-DD HH-MM-SS###########
+#              lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image
+    log_damage(49.221039, 12.675019, 3, 2, 0, "2022-11-23 12:01:11", 2, 0,"Test")
+    #print(CheckUserName("hans"))
+    #for damage in get_all_damages():
+    #            print(damage)
+    #print(get_all_users())

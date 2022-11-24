@@ -1,5 +1,5 @@
 from geopy.geocoders import Nominatim
-
+import datetime
 import os
 current_path = os.path.dirname(__file__) 
 
@@ -7,7 +7,7 @@ class Damage:
     
     def __init__(self, damage_id, lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status, piture_path):
 
-        damagetypelist=['Pothole','Crack','AlligatorCrack'] 
+        damagetypelist=['Pothole','Crack','Alligator Crack'] 
 
 
         self.damage_id = damage_id

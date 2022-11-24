@@ -78,7 +78,7 @@ class Map(MapView):
                         date = damage.timestamp
                     else:
                         date = "unknown"
-                    text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {damage.lat}\\{damage.lon}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nTimestamp: {date}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
+                    text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {round(damage.lat,3)}\\{round(damage.lon,3)}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nDate: {date.date()}\nTime: {date.time()}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
 
                     first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
 
@@ -246,9 +246,9 @@ class Mainscreen(Screen):
             "id": "repairstatusselection",
             },
             {
-            "viewclass": "MDIconButton",
+            "viewclass": "MDRoundFlatIconButton",
             "text": "Apply Filter:",
-            "icon": "language-python",
+            "icon": "filter",
             "on_release": lambda x="City": self.menu_callback(x),
             },
         ]
