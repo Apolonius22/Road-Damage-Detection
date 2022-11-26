@@ -64,7 +64,7 @@ class Map(MapView):
     
     def load_points_from_db(self,*args):
             self.init = True
-
+            #self.damage_id_on_map_list = []
             for damage in get_all_damages():
 
                 
