@@ -59,8 +59,11 @@ import filetype
 
 class Map(MapView):
 
+
+
     init = False
     damage_id_on_map_list = []
+    damage_marker_list = []
     
     def load_points_from_db(self,*args):
             self.init = True
@@ -101,7 +104,8 @@ class Map(MapView):
                     first.add_widget(card)
                     bub.add_widget(first)
                     marker.add_widget(bub)
-                    self.damage_id_on_map_list.append((damage,marker))
+                    self.damage_marker_list.append((damage,marker))
+                    self.damage_id_on_map_list.append(damage.damage_id)
                     self.add_widget(marker)
 
 
@@ -135,37 +139,54 @@ class Map(MapView):
             print(damage)
 
     def apply_filter(self,damage_filter):
+
         self.load_points_from_db()
-        for damage,marker in self.damage_id_on_map_list:
+        q = self.damage_marker_list
+        for damage,marker in self.damage_marker_list:
             
             if damage.damageclass not in damage_filter.classselection:
-                self.remove_widget(marker)
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
+                self.remove_widget(marker) 
+                continue
 
             if damage.severity not in damage_filter.severityselection:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
             if damage.weather not in damage_filter.weatherselection:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
             if damage.user_id not in damage_filter.userselection and len(damage_filter.userselection) > 0:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
             if damage.repair_status not in damage_filter.repairstatusselection:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
 
-
-            
-            area_filter = False
             if len(damage_filter.areaselection) > 0:
-                area_filter = True
                 area = get_adress(damage.lat,damage.lon)
                 for location in damage_filter.areaselection:
-                    if location.lower() in area.address.lower():
-                        area_filter = False
+                    if location.lower() not in area.address.lower():
+                   
+                        self.damage_id_on_map_list.remove(damage.damage_id)
+                        #self.damage_marker_list.remove((damage,marker))
+                        self.remove_widget(marker)
 
-            if area_filter:
-                self.remove_widget(marker)
+
+
+
 
 
 
@@ -251,6 +272,15 @@ class Mainscreen(Screen):
             "icon": "filter",
             "on_release": lambda x="City": self.menu_callback(x),
             },
+            # {
+            # "viewclass": "MDProgressBar",
+            # "id": "progress",
+            # "type": "determinate",
+            # "running_duration": "1",
+            # "catching_duration": "1.5",
+            # },
+
+            
         ]
         self.filter_dropdown = MDDropdownMenu(
             width_mult = 8,
@@ -261,8 +291,12 @@ class Mainscreen(Screen):
 
         
 
+
     def menu_callback(self,text_of_the_option):
         #self.repairstatusselection = repairstatusselection_good
+        progressbar = None
+
+
 
         for filter in self.filter_dropdown.children[0].children[0].children[0].children:
 
@@ -296,9 +330,9 @@ class Mainscreen(Screen):
                 else:
                     self.damage_filter.classselection.discard('Crack')
                 if filter.ids.classselection_allicrack.active:
-                    self.damage_filter.classselection.add('AlligatorCrack')
+                    self.damage_filter.classselection.add('Alligator Crack')
                 else:
-                    self.damage_filter.classselection.discard('AlligatorCrack')
+                    self.damage_filter.classselection.discard('Alligator Crack')
                 if filter.ids.classselection_pothole.active:
                     self.damage_filter.classselection.add('Pothole')
                 else:
@@ -338,7 +372,9 @@ class Mainscreen(Screen):
                         except:
                             continue               
                 print(self.damage_filter.userselection)
+
         self.ids.mapview.apply_filter(self.damage_filter)
+
 
 class Settingsscreen(Screen):
     pass

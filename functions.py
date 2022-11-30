@@ -27,7 +27,7 @@ class Damage:
 class Filter():
     areaselection = []
     severityselection = {1,2,3}
-    classselection = {'Pothole','Crack','AlligatorCrack'}
+    classselection = {'Pothole','Crack','Alligator Crack'}
     weatherselection = {1,0}
     userselection = []
     repairstatusselection = {1,0}
