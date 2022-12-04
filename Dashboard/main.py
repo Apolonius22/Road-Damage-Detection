@@ -68,6 +68,12 @@ class Map(MapView):
     def load_points_from_db(self,*args):
             self.init = True
             #self.damage_id_on_map_list = []
+
+            # if len(get_all_damages()) ==  0:
+
+            #     app.root.screens[2].online = False
+
+
             for damage in get_all_damages():
 
                 
@@ -231,6 +237,7 @@ class Mainscreen(Screen):
     
     filter_dropdown = ObjectProperty()
     damage_filter = Filter()
+    online = True
 
 
     def on_enter(self):
