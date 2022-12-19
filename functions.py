@@ -22,8 +22,15 @@ class Damage:
         self.piture_path = piture_path
 
     def __str__(self):
-        return f"Damage_ID:{self.damage_id}\nGPS:{self.lat}\\{self.lon}\nClass:{self.damageclass}\nSeverity:{self.severity}\nWeather:{self.weather}\nTimestamp:{self.timestamp}\nUser_id:{self.user_id}\nRepair_status:{self.repair_status}\nPath_to_picture:{self.piture_path}"
+        return f"Damage_ID:{self.damage_id}\nGPS:{self.lat}\\{self.lon}\nClass:{self.damageclass}\nSeverity:{self.severity}\nWeather:{self.weather}\nTimestamp:{self.timestamp}\nUser_id:{self.user_id}\nRepair_status:{self.repair_status}\nPath_to_picture:{self.piture_path}\n"
 
+class Filter():
+    areaselection = []
+    severityselection = {1,2,3}
+    classselection = {'Pothole','Crack','AlligatorCrack'}
+    weatherselection = {1,0}
+    userselection = []
+    repairstatusselection = {1,0}
 
 
 def isfloat(num):
@@ -36,7 +43,7 @@ def isfloat(num):
 
 def get_adress(Latitude,Longitude):
     geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(Latitude+","+Longitude)
+    location = geolocator.reverse(str(Latitude) + "," + str(Longitude))
 
     return location
 
@@ -51,3 +58,11 @@ def write_file(data, filename):
     # Convert binary data to proper format and write it on Hard Disk
     with open(filename, 'wb') as file:
         file.write(data)
+
+
+
+def detect_with_yolo():
+    pass
+    
+
+###### This is a Test#########
