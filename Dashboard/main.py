@@ -18,18 +18,41 @@ from kivy.uix.bubble import Bubble
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
-from kivy.uix.screenmanager import FadeTransition,Screen#, NoTransition, CardTransition, ScreenManager
+from kivy.uix.screenmanager import FadeTransition,Screen
 from kivy.uix.widget import Widget
 from kivy.uix.spinner import Spinner
 from kivy.uix.gridlayout import GridLayout
 
 
 ####################  Kivymd imports ####################
+
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.list import IRightBodyTouch
+from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget, IconLeftWidgetWithoutTouch
+
+#################### Other Imports ####################
+
+import sys
+import filetype
+ 
+
+
+#################### imports from other Files ###########
+
+
+# setting pathC:
+sys.path.append('../Road-Damage-Detection') # neccessary for imports to be found 
+
+from functions import *
+from Mysql_functions import *
+from run_yolo import run_rdd
+
+
 
 
 #################### configuration / Global Variables
@@ -37,25 +60,11 @@ from kivymd.uix.menu import MDDropdownMenu
 Window.maximize()
 
 
-#################### Other Imports ####################
-
-import sys
- 
-# setting pathC:
-sys.path.append('../Road-Damage-Detection')
-
-from functions import *
-from Mysql_functions import *
-from run_yolo import run_rdd
 
 
-#################### Screens ####################
 
 
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.list import IRightBodyTouch
-from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget, IconLeftWidgetWithoutTouch
-import filetype
+
 
 class Map(MapView):
 
@@ -205,6 +214,9 @@ class ClickableTextFieldRound(MDRelativeLayout):
     hint_text = StringProperty()
 
 
+
+###################### Classes for the filter selections menue ##################
+
 class Areaselection(MDBoxLayout):
     pass
 class Severityselection(MDBoxLayout):
@@ -217,15 +229,22 @@ class Userselection(MDBoxLayout):
     pass
 class Repairstatusselection(MDBoxLayout):
     pass
-    
+
+####################### File selection pop class ################################################## 
 
 class SaveFile(Popup):
     def Getthepath(self,filepath,app):
         
         app.root.screens[2].selected_path_list.append(str(filepath))
 
+class Filepicker(GridLayout):
+    
+    def __init__(self, **kwargs):
+        super(Filepicker, self).__init__(**kwargs)
+        filepop = SaveFile()
+        filepop.open()
 
-
+############################# Screens #######################################
 
 class Loginscreen(Screen):
     pass
@@ -419,12 +438,7 @@ class Analyticsscreen(Screen):
                 run_rdd(file)
 
 
-class Filepicker(GridLayout):
-    
-    def __init__(self, **kwargs):
-        super(Filepicker, self).__init__(**kwargs)
-        filepop = SaveFile()
-        filepop.open()
+
         
 
 
@@ -434,10 +448,10 @@ class Filepicker(GridLayout):
 class MainApp(MDApp):
    
 
-
     def build(self):
         pass
 
+##################### Functions for switching screens to make changes in animation etc. central
 
     def switch_to_Analyticsscreen(self):
         self.root.transition = FadeTransition(duration=0.5)
@@ -459,6 +473,9 @@ class MainApp(MDApp):
         self.root.transition = FadeTransition(duration=0.5)
         self.root.current = "Complainscreen"
 
+#############################################################################################################
+
+
     def reload_damages(self,mapview):
         mapview.print_points_from_db()
 
@@ -466,10 +483,10 @@ class MainApp(MDApp):
         mapview.center(location)
 
 
-    def callback2(self):#),instance):
+    def callback2(self):
         return Filepicker()
     
-    def callback3(self):#),instance):
+    def callback3(self):
         pass
 
 

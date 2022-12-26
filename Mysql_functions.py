@@ -77,9 +77,9 @@ def get_all_damages():
         myresult = mycursor.fetchall()
         
         for i in myresult:
-            storing_path = current_path +f"\\cache\\{i[0]}.jpg"
+            picture_storing_path = current_path +f"\\cache\\{i[0]}.jpg"
             #write_file(i[9], storing_path)
-            damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],storing_path))
+            damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],picture_storing_path))
         mycursor.close()
         mydb.close()
         
