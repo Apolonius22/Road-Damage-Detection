@@ -68,6 +68,28 @@ def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, rep
         mycursor.close()
         mydb.close()
 
+def log_damage(Damage):
+    mycursor, mydb = get_cursor()
+    if mycursor != None or mydb != None: 
+
+        previous_damages = get_all_damages()
+        damage_unique = True
+        for damage in previous_damages:
+            if damage.lat == Damage.lat and damage.lon == Damage.lon:# and damage.damageclass == damageclass:
+                damage_unique = False
+        if damage_unique:
+            #mycursor = mydb.cursor()
+            sql = '''INSERT INTO registered_damages (lat, lon, damage_class, severity_class, weather, timestamp, user_id, repair_status,image) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+            val = (Damage.lat, Damage.lon, Damage.damageclass, Damage.severity, Damage.weather, Damage.timestamp, Damage.user_id, Damage.repair_status, Damage.piture_path)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            print("logged successfully")
+        else:
+            print("damage GPS already logged")
+        mycursor.close()
+        mydb.close()
+
 
 def get_all_damages():
     mycursor, mydb = get_cursor()

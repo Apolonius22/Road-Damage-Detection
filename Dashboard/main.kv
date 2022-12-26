@@ -2,6 +2,8 @@
 #:import MapSource kivy_garden.mapview.MapSource
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
+#################### Screens ###############################
+
 ScreenManager:
     Loginscreen:
     Mainscreen:
@@ -56,7 +58,7 @@ ScreenManager:
     
 
 
-
+########### Definition of ClickableTextField (is used for search bar) #############################
 
 <ClickableTextFieldRound>:
     id: ClickableTextField
@@ -86,7 +88,7 @@ ScreenManager:
 
 
 
-######################################################################
+########################## definition of filter menue objects ################################################
 
 <Areaselection>:
     orientation:"horizontal"
@@ -294,25 +296,34 @@ ScreenManager:
             size_hint_y: 2.2
 
             MDFillRoundFlatButton:
-                text:"Sign In"
+                text:"Start"
                 size_hint_x:0.8
                 pos_hint: {'center_x': 0.5}
                 size_hint_y: None
                 font_size:16
                 on_release:
                     app.switch_to_Mainscreen()
-                    #root.manager.transition.direction="left"
 
-            MDFillRoundFlatButton:
-                text:"Sign Up"
-                size_hint_x:0.8
-                size_hint_y: None
-                pos_hint: {'center_x': 0.5}
-                bold: True
-                font_size:16
-                on_release:
-                    app.switch_to_Mainscreen()
-                    #root.manager.transition.direction="left"
+            #MDFillRoundFlatButton:
+            #    text:"Sign In"
+            #    size_hint_x:0.8
+            #    pos_hint: {'center_x': 0.5}
+            #    size_hint_y: None
+            #    font_size:16
+            #    on_release:
+            #        app.switch_to_Mainscreen()
+            #        #root.manager.transition.direction="left"
+
+            #MDFillRoundFlatButton:
+            #    text:"Sign Up"
+            #    size_hint_x:0.8
+            #    size_hint_y: None
+            #    pos_hint: {'center_x': 0.5}
+            #    bold: True
+            #    font_size:16
+            #    on_release:
+            #        app.switch_to_Mainscreen()
+            #        #root.manager.transition.direction="left"
 
 
 
@@ -334,128 +345,63 @@ ScreenManager:
     name:"Mainscreen"
     id: "Mainscreen"
 
-    MDScreen:
-
-        MDNavigationLayout:
-
-            MDScreenManager:
-
-                MDScreen:
+    RelativeLayout:
 
 
+        Map:
+            id: mapview
+            lat: 10
+            lon: 10
+            zoom: 10
+            on_zoom:
+                self.zoom = 5 if self.zoom < 5 else self.zoom
+            on_lat:
+                self.init_damages()
+            #on_lon:
+                #self.init_damages()
 
 
 
-                    RelativeLayout:
+        MDTopAppBar:
+            title: "Main Screen"
+            #elevation: 4
+            pos_hint: {"top": 1}
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            right_action_items:
+                [
+                ["reload", lambda x: mapview.load_points_from_db(), "reload", "reload"],
+                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
+                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
+                ]
+    MDCard:
+        orientation: "vertical"
+        padding: "10dp"
+        spacing: "5dp"
+        size_hint: None, None
+        size: "350dp",  "55dp"
+        pos_hint: {"center_x": .125, 'top': 0.9}
 
+        FloatLayout:
 
-                        Map:
-                            id: mapview
-                            lat: 10
-                            lon: 10
-                            zoom: 10
-                            on_zoom:
-                                self.zoom = 5 if self.zoom < 5 else self.zoom
-                            on_lat:
-                                self.init_damages()
-                            #on_lon:
-                                #self.init_damages()
+            MDIconButton:
+                id: filter_button
+                icon: "menu"
+                pos_hint: {"center_x": .05,"center_y": .5}
+                #pos: 0,0#text_field.width - self.width + dp(8), 0
+                theme_text_color: "Hint"
+                on_release:
+                    app.root.current_screen.filter_dropdown.open()
 
-                
+            ClickableTextFieldRound:
+                size_hint_x: None
+                width: "290dp"
+                hint_text: "Enter City or GPS to focuse on"# e.g cham or 49.2,32.1"
+                pos_hint: {"center_x": .55, "center_y": .5}
+                test: mapview
 
-                        MDTopAppBar:
-                            title: "Main Screen"
-                            #elevation: 4
-                            pos_hint: {"top": 1}
-                            md_bg_color: "#e7e4c0"
-                            specific_text_color: "#4a4939"
-                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-                            right_action_items:
-                                [
-                                ["reload", lambda x: mapview.load_points_from_db(), "reload", "reload"],
-                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
-                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
-                                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
-                                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
-                                ]
-                    MDCard:
-                        orientation: "vertical"
-                        padding: "10dp"
-                        spacing: "5dp"
-                        size_hint: None, None
-                        size: "350dp",  "55dp"
-                        pos_hint: {"center_x": .125, 'top': 0.9}
-
-                        FloatLayout:
-
-                            MDIconButton:
-                                id: filter_button
-                                icon: "menu"
-                                pos_hint: {"center_x": .05,"center_y": .5}
-                                #pos: 0,0#text_field.width - self.width + dp(8), 0
-                                theme_text_color: "Hint"
-                                on_release:
-                                    app.root.current_screen.filter_dropdown.open()
-
-                            ClickableTextFieldRound:
-                                size_hint_x: None
-                                width: "290dp"
-                                hint_text: "Enter City or GPS to focuse on"# e.g cham or 49.2,32.1"
-                                pos_hint: {"center_x": .55, "center_y": .5}
-                                test: mapview
-
-                                
-
-
-            MDNavigationDrawer:
-                id: nav_drawer
-                radius: (0, 16, 16, 0)
-                #padding: (0, 56, 12, 16)
-
-                MDNavigationDrawerMenu:
-
-
-                    
-                    MDNavigationDrawerHeader:
-                        title: "Hodophile"
-                        title_color: "#4a4939"
-                        text: "User text"
-                        spacing: "4dp"
-                        padding: "12dp", 0, 0, "56dp"
-                    
-                    MDNavigationDrawerLabel:
-                        text: "Enter City or GPS to focuse on"
-                    
-                    
-                    ClickableTextFieldRound:
-                        size_hint_x: None
-                        width: "290dp"
-                        hint_text: "e.g cham or 49.2,32.1"
-                        pos_hint: {"center_x": .2, "center_y": .5}
-                        test: mapview
-                    MDNavigationDrawerDivider:
-
-                    MDNavigationDrawerLabel:
-                        text: "User "
-
-                    DrawerClickableItem:
-                        icon: "login"
-                        right_text: "+99"
-                        text_right_color: "#4a4939"
-                        text: "LogIn"
-
-                    DrawerClickableItem:
-                        icon: "account"
-                        text: "register"
-
-                    MDNavigationDrawerDivider:
-
-                    MDNavigationDrawerLabel:
-                        text: "Report"
-
-                    DrawerClickableItem:
-                        icon: "file-document"
-                        text: "create report"
 
         
 
@@ -468,231 +414,125 @@ ScreenManager:
 <Analyticsscreen>:
     name:"Analyticsscreen"
     
-    MDScreen:
 
-        MDNavigationLayout:
+    RelativeLayout:
 
-            MDScreenManager:
+        MDTopAppBar:
+            title: "Analytics Screen"
+            elevation: 4
+            pos_hint: {"top": 1}
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            right_action_items:
+                [
+                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
+                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
+                ]
 
-                MDScreen:
-                    RelativeLayout:
-
-
-                        MDTopAppBar:
-                            title: "Analytics Screen"
-                            elevation: 4
-                            pos_hint: {"top": 1}
-                            md_bg_color: "#e7e4c0"
-                            specific_text_color: "#4a4939"
-                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-                            right_action_items:
-                                [
-                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
-                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
-                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
-                                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
-                                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
-                                ]
-
-                    MDCard:
-                        id: Card
-                        orientation: "vertical"
-                        padding: "10dp"
-                        spacing: "5dp"
-                        size_hint: None, None
-                        size: "1500dp",  "690dp"
-                        pos_hint: {"center_x": .5,"center_y": .46}
-                        md_bg_color: [0,0.5,0.5, 0.3] 
-                        
+    MDCard:
+        id: Card
+        orientation: "vertical"
+        padding: "10dp"
+        spacing: "5dp"
+        size_hint: None, None
+        size: "1500dp",  "690dp"
+        pos_hint: {"center_x": .5,"center_y": .46}
+        md_bg_color: [0,0.5,0.5, 0.3] 
+        
 
 
-                        GridLayout:
-                            cols: 2 
-                            #minimum_height: True
+        GridLayout:
+            cols: 2 
+            #minimum_height: True
+            
+            GridLayout:
+                rows: 3
+                #minimum_height: True
+
+                MDLabel:
+                    text:"To analyze street damages in videos klick on the + Icon and select the Files.\nTo remove the Files klick on the – Icon"
+                    font_size: 18                                  
+                    halign: 'left'
+                    valign: 'top'
+                    size_hint: None, None
+                    size: 700, 100
+
+                MDScrollView:
+                    MDList:
+                        id: file_list
+
+                        OneLineListItem:
+                            id: path_one
+                            text: "List of selected Video Files for Analysis"
+
+
+
+                        MDIconButton:
+                            icon: "plus"
+                            size_hint: (None, None)
+                            pos_hint: {'x': .5, 'center_y': .5}
+                            on_release:
+                                app.callback2()
                             
-                            GridLayout:
-                                rows: 3
-                                #minimum_height: True
-
-                                MDLabel:
-                                    text:"To analyze street damages in videos klick on the + Icon and select the Files.\nTo remove the Files klick on the – Icon"
-                                    font_size: 18                                  
-                                    halign: 'left'
-                                    valign: 'top'
-                                    size_hint: None, None
-                                    size: 700, 100
-
-                                MDScrollView:
-                                    MDList:
-                                        id: file_list
-
-                                        OneLineListItem:
-                                            id: path_one
-                                            text: "List of selected Video Files for Analysis"
+                RelativeLayout:
+                    size_hint: None, None
+                    size: 700, 200
+                    pos: 200, 200                  
 
 
-
-                                        MDIconButton:
-                                            icon: "plus"
-                                            size_hint: (None, None)
-                                            pos_hint: {'x': .5, 'center_y': .5}
-                                            on_release:
-                                                app.callback2()
-                                            
-                                RelativeLayout:
-                                    size_hint: None, None
-                                    size: 700, 200
-                                    pos: 200, 200                  
+                    Button:
+                        text: "Save and Start the detection"
+                        size_hint: (1, 0.4)
+                        bold: True
+                        font_size:16
+                        background_color: '#25a9e8'
+                        on_release: 
+                            app.root.screens[2].run_detection()
 
 
-                                    Button:
-                                        text: "Save and Start the detection"
-                                        size_hint: (1, 0.4)
-                                        bold: True
-                                        font_size:16
-                                        background_color: '#25a9e8'
-                                        on_release: 
-                                            app.root.screens[2].run_detection()
-
-
-                            FitImage:
-                                source: r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\frame_1.jpg"
+            FitImage:
+                source: r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\frame_1.jpg"
                                 
                                 
-                                
-
-
-
-            MDNavigationDrawer:
-                id: nav_drawer
-                radius: (0, 16, 16, 0)
-
-                MDNavigationDrawerMenu:
-
-                    MDNavigationDrawerHeader:
-                        title: "Header title"
-                        title_color: "#4a4939"
-                        text: "Header text"
-                        spacing: "4dp"
-                        padding: "12dp", 0, 0, "56dp"
-
-                    MDNavigationDrawerLabel:
-                        text: "User "
-
-                    DrawerClickableItem:
-                        icon: "gmail"
-                        right_text: "+99"
-                        text_right_color: "#4a4939"
-                        text: "LogIn"
-
-                    DrawerClickableItem:
-                        icon: "send"
-                        text: "register"
-
-                    MDNavigationDrawerDivider:
-
-                    MDNavigationDrawerLabel:
-                        text: "Report"
-
-                    DrawerClickableItem:
-                        icon: "file-document"
-                        text: "create report"
-
-                    MDNavigationDrawerLabel:
-                        text: "Labels"
-
-                    DrawerLabelItem:
-                        icon: "information-outline"
-                        text: "Label"
-
-                    DrawerLabelItem:
-                        icon: "information-outline"
-                        text: "Label"
+                            
 
 
 
 
 <Complainscreen>:
     name:"Complainscreen"
-    
-    MDScreen:
 
-        MDNavigationLayout:
-
-            MDScreenManager:
-
-                MDScreen:
-                    RelativeLayout:
+    RelativeLayout:
 
 
-                        MDTopAppBar:
-                            title: "Complain screen"
-                            elevation: 4
-                            pos_hint: {"top": 1}
-                            md_bg_color: "#e7e4c0"
-                            specific_text_color: "#4a4939"
-                            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-                            right_action_items:
-                                [
-                                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
-                                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
-                                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
-                                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
-                                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
-                                ]
+        MDTopAppBar:
+            title: "Complain screen"
+            elevation: 4
+            pos_hint: {"top": 1}
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+            right_action_items:
+                [
+                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
+                ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
+                ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
+                ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
+                ["logout",lambda x: app.switch_to_Loginscreen(),"logout","logout"],
+                ]
 
-                    MDCard:
-                        id: Card
-                        orientation: "vertical"
-                        padding: "10dp"
-                        spacing: "5dp"
-                        size_hint: None, None
-                        size: "1500dp",  "690dp"
-                        pos_hint: {"center_x": .5,"center_y": .46}
-                        md_bg_color: [0,0.5,0.5, 0.3] 
+########################### Add here to chainge the Complain Screen ######################
 
-            MDNavigationDrawer:
-                id: nav_drawer
-                radius: (0, 16, 16, 0)
+    MDCard:
+        id: Card
+        orientation: "vertical"
+        padding: "10dp"
+        spacing: "5dp"
+        size_hint: None, None
+        size: "1500dp",  "690dp"
+        pos_hint: {"center_x": .5,"center_y": .46}
+        md_bg_color: [0,0.5,0.5, 0.3] 
 
-                MDNavigationDrawerMenu:
-
-                    MDNavigationDrawerHeader:
-                        title: "Header title"
-                        title_color: "#4a4939"
-                        text: "Header text"
-                        spacing: "4dp"
-                        padding: "12dp", 0, 0, "56dp"
-
-                    MDNavigationDrawerLabel:
-                        text: "User "
-
-                    DrawerClickableItem:
-                        icon: "gmail"
-                        right_text: "+99"
-                        text_right_color: "#4a4939"
-                        text: "LogIn"
-
-                    DrawerClickableItem:
-                        icon: "send"
-                        text: "register"
-
-                    MDNavigationDrawerDivider:
-
-                    MDNavigationDrawerLabel:
-                        text: "Report"
-
-                    DrawerClickableItem:
-                        icon: "file-document"
-                        text: "create report"
-
-                    MDNavigationDrawerLabel:
-                        text: "Labels"
-
-                    DrawerLabelItem:
-                        icon: "information-outline"
-                        text: "Label"
-
-                    DrawerLabelItem:
-                        icon: "information-outline"
-                        text: "Label"

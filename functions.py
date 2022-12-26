@@ -21,16 +21,16 @@ class Damage:
         self.repair_status = repair_status
         self.piture_path = piture_path
 
-    def __str__(self):
+    def __str__(self):# will return object as a string in e.g. print statement
         return f"Damage_ID:{self.damage_id}\nGPS:{self.lat}\\{self.lon}\nClass:{self.damageclass}\nSeverity:{self.severity}\nWeather:{self.weather}\nTimestamp:{self.timestamp}\nUser_id:{self.user_id}\nRepair_status:{self.repair_status}\nPath_to_picture:{self.piture_path}\n"
 
 class Filter():
     areaselection = []
-    severityselection = {1,2,3}
-    classselection = {'Pothole','Crack','Alligator Crack'}
-    weatherselection = {1,0}
+    severityselection = {1,2,3} #class = set (like list but no duplicates)
+    classselection = {'Pothole','Crack','Alligator Crack'} #class = set (like list but no duplicates)
+    weatherselection = {1,0} #class = set (like list but no duplicates)
     userselection = []
-    repairstatusselection = {1,0}
+    repairstatusselection = {1,0} #class = set (like list but no duplicates)
 
 
 def isfloat(num):
