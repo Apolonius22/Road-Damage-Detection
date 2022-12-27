@@ -1,0 +1,830 @@
+#: import Factory kivy.factory.Factory
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+WindowManager:
+    StartScreen:
+        id:StartScreen
+    SignIn:
+        id:SignIn
+    SignUp:
+        id: SignUp
+    PolicyandTerms:
+        id: PolicyandTerms
+    MainScreen:
+        id:Main
+    ImageCaptions:
+        id:ImageCaptions
+    Setting:
+        id: Setting
+    Complain:
+        id: Complain
+    NewComplaint:
+        id: NewComplaint
+    ContactUs:
+        id:ContactUs
+    UnderConstruction:
+        id:UnderConstruction
+
+<StartScreen>:
+    name:"StartScreen"
+    FitImage:
+        source:"logo2.png"
+        y: root.height-self.height
+    GridLayout:
+        cols:1
+        BoxLayout:
+            orientation:"vertical"
+            spacing:5
+            padding:10
+            size_hint_y: 1.1
+        BoxLayout:
+            orientation:"vertical"
+            spacing:1
+            padding:10
+            size_hint_y: 0.7
+            MDLabel:
+                text:"Hodophile"
+                font_size: '45sp'
+                halign: "left"
+                #font_name: 'Comic'
+                color: 0,0,204,0.6
+            MDLabel:
+                text:"Be the compromise you want to see in the world."
+                font_size: '14sp'
+                halign: "left"
+                #font_name: 'Comic'
+                color: 0,0,204,1
+        BoxLayout:
+            orientation:"vertical"
+            spacing:15
+            padding:10
+            size_hint_y: 2.2
+            MDFillRoundFlatButton:
+                text:"Sign In"
+                size_hint_x:0.75
+                pos_hint: {'center_x': 0.5}
+                size_hint_y: None
+                #font_size:16
+                md_bg_color: 71/255,71/255,107/255,0.8
+                on_release:
+                    app.root.current="SignIn"
+                    root.manager.transition.direction="left"
+            MDFillRoundFlatButton:
+                text:"Sign Up"
+                size_hint_x:0.75
+                size_hint_y: None
+                pos_hint: {'center_x': 0.5}
+                bold: True
+                #font_size:16
+                md_bg_color: 71/255,71/255,107/255,0.8
+                on_release:
+                    app.root.current="SignUp"
+                    root.manager.transition.direction="left"
+        BoxLayout:
+            orientation:"vertical"
+            spacing:5
+            padding:10
+            MDLabel:
+                text:"Your data and personal information are protected and encrpeted"
+                font_size: '12sp'
+                size_hint_x:0.8
+                pos_hint: {'center_x': 0.60}
+                color: '#FFFFFF'
+<SignIn>:
+    name:"SignIn"
+    title: "LogIn"
+    FitImage:
+        source:"logo2.png"
+        size_hint_y:0.8
+        pos_hint: {'center_y': 1}
+    MDFloatingActionButton:
+        icon: "arrow-left"
+        pos_hint: {'center_x': 0.1,'center_y': 0.6}
+        md_bg_color: 71/255,71/255,107/255,0.5
+        icon_color: "white"
+        line_color: 
+        on_release:
+            app.root.current="StartScreen"
+            root.manager.transition.direction="right"
+
+    GridLayout:
+        cols:1
+        BoxLayout:
+            orientation:"vertical"
+            spacing:5
+            padding:10
+            size_hint_y: 1.6
+        BoxLayout:
+            orientation:"vertical"
+            spacing:25
+            padding:30
+            size_hint_y: 0.1
+
+            MDLabel:
+                text:"Welcome Back!"
+                font_size: '30sp'
+                halign: "left"
+                size_hint_y:0.1
+                valign:"bottom"
+                color: 0,0,204,0.6
+        BoxLayout:
+            orientation:"vertical"
+            spacing:40
+            padding:40
+            size_hint_y: 1
+            MDTextField:
+                hint_text: "User Name"
+                helper_text: "Enter Your User Name"
+                required: True
+                helper_text_mode: "on_error"
+                size_hint_x: 0.9
+                pos_hint: {'center_x': 0.5}
+            MDTextField:
+                hint_text: "Password"
+                helper_text: "Enter Your User Password"
+                required: True
+                password:True
+                helper_text_mode: "on_error"
+                size_hint_x: 0.9
+                pos_hint: {'center_x': 0.5}
+                icon_right: 'eye-off'
+            MDFillRoundFlatButton:
+                text:"Sign In"
+                size_hint_x:0.8
+                pos_hint: {'center_x': 0.5}
+                size_hint_y: None
+                md_bg_color: 71/255,71/255,107/255,0.8
+                #font_size:16
+                on_release:
+                    app.root.current="MainScreen"
+                    root.manager.transition.direction="up"
+        BoxLayout:
+            orientation:"vertical"
+            spacing:25
+            padding:50
+            size_hint_y: 0.5
+<MainScreen>:
+    name:"MainScreen"
+    title: "MainScreen"
+    FitImage:
+        source:"back.png"
+    GridLayout:
+        cols:1
+        spacing:25
+        padding:10
+        MDTopAppBar:
+            title: "Hodophile"
+            specific_text_color:71/255,71/255,107/255
+            md_bg_color: "#FBFCFC"
+            icon: "calendar"
+            mode: "end"
+            elevation: 2
+            left_action_items: [["menu",lambda x: nav_drawer.set_state('toggle'),'Menu']]
+            right_action_items:[["bell-outline", lambda x: x,'Notifications']]
+        MDLabel:
+            text:"Welcome Elham!"
+            font_size: '20sp'
+            size_hint_y:0.02
+            bold: True
+        ScrollView:
+            do_scroll_y: True
+            do_scroll_x: False
+            bar_width: 5
+            bar_color: 71/255,71/255,107/255,0.7
+            bar_inactive_color: 71/255,71/255,107/255,0.2
+            GridLayout:
+                cols:1
+                spacing:450
+                padding:15
+                size_hint_y: None
+                height: self.minimum_height
+                adaptive_height: True
+                GridLayout:
+                    cols:1
+                    spacing:40
+                    padding:20
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Options"
+                        font_size:'16sp'
+                    GridLayout:
+                        cols:2
+                        spacing: 10
+                        size_hint_y: None
+                        MDSmartTile:
+                            radius: 0
+                            box_radius: [0, 0,0,0]
+                            box_color: 1, 1, 1, 0.8
+                            source: "pic1.png"
+                            size_hint: None, None
+                            size: "200sp","150sp"
+                            halign: "center"
+                            MDIconButton:
+                                icon: "arrow-right"
+                                theme_icon_color: "Custom"
+                                icon_color: "#49494d"
+                                #size_hint: 0.5,0.5
+                                pos_hint: {"center_y": .5}
+                                on_release:
+                                    app.root.current="ImageCaptions"
+                                    root.manager.transition.direction="right"
+                            MDLabel:
+                                text: " Take Picture"
+                                font_size: '12sp'
+                                color: '#49494d'
+                        MDSmartTile:
+                            radius: 0
+                            box_radius: [0, 0, 0, 0]
+                            box_color: 1, 1, 1, .8
+                            source: "video.png"
+                            size_hint: None, None
+                            size: "200sp","150sp"
+                            halign: "center"
+                            MDIconButton:
+                                icon: "arrow-right"
+                                theme_icon_color: "Custom"
+                                icon_color: "#49494d"
+                                #size_hint: 0.2,0.1
+                                pos_hint: {"center_y": .5}
+                                on_release:
+                                    app.root.current="UnderConstruction"
+                                    root.manager.transition.direction="right"
+                            MDLabel:
+                                text: " Live mode"
+                                font_size: '12sp'
+                                color: '#49494d'
+                GridLayout:
+                    cols:1
+                    spacing:40
+                    padding:20
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Map Overview"
+                        font_size:'16sp'
+                    GridLayout:
+                        cols:1
+                        spacing:10
+                        size_hint_y:None
+                        MDSmartTile:
+                            radius: 0
+                            box_radius: [0, 0, 0, 0]
+                            box_color: 1, 1, 1, .8
+                            source: "maps.png"
+                            size_hint: None, None
+                            size: "400sp","150sp"
+                            halign: "center"
+                            MDIconButton:
+                                icon: "arrow-right"
+                                theme_icon_color: "Custom"
+                                icon_color: "#49494d"
+                                #size_hint: 0.2,0.1
+                                pos_hint: {"center_y": .5}
+                                on_release:
+                                    app.root.current="UnderConstruction"
+                                    root.manager.transition.direction="right"
+                            MDLabel:
+                                text: " Check points"
+                                font_size: '12sp'
+                                color: '#49494d'
+                GridLayout:
+                    cols:1
+                    spacing:40
+                    padding:20
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Updates"
+                        font_size:'16sp'
+                    GridLayout:
+                        cols:2
+                        spacing: 10
+                        size_hint_y:None
+                        MDSmartTile:
+                            radius: 0
+                            box_radius: [0, 0, 0, 0]
+                            box_color: 1, 1, 1, .8
+                            source: "update.png"
+                            size_hint: None, None
+                            size: "200sp","150sp"
+                            halign: "center"
+                            MDIconButton:
+                                icon: "arrow-right"
+                                theme_icon_color: "Custom"
+                                icon_color: "#49494d"
+                                #size_hint: 0.2,0.1
+                                pos_hint: {"center_y": .5}
+                                on_release:
+                                    app.root.current="UnderConstruction"
+                                    root.manager.transition.direction="right"
+                            MDLabel:
+                                text: " Registered damages"
+                                font_size: '12sp'
+                                color: '#49494d'
+                        MDSmartTile:
+                            radius: 0
+                            box_radius: [0, 0, 0, 0]
+                            box_color: 1, 1, 1, .8
+                            source: "complain.png"
+                            size_hint: None, None
+                            size: "200sp","150sp"
+                            halign: "center"
+                            MDIconButton:
+                                icon: "arrow-right"
+                                theme_icon_color: "Custom"
+                                icon_color: "#49494d"
+                                #size_hint: 0.2,0.1
+                                pos_hint: {"center_y": .5}
+                                on_release:
+                                    app.root.current="Complain"
+                                    root.manager.transition.direction="right"
+                            MDLabel:
+                                text: " Complain"
+                                font_size: '12sp'
+                                color: '#49494d'
+        MDBottomNavigation:
+            panel_color: "#FDFEFE"
+            text_color_active: "#3393FF"
+            size_hint_y:0.1
+            MDBottomNavigationItem:
+                name: 'home'
+                text: 'Home'
+                icon: 'home'
+            MDBottomNavigationItem:
+                text: 'Profile'
+                icon: 'account'
+            MDBottomNavigationItem:
+                text: 'History'
+                icon: 'wallet'
+    MDNavigationDrawer:
+        id: nav_drawer
+
+        GridLayout:
+            cols:1
+            padding:10
+            MDLabel:
+                text: "Menu"
+                font_size: '25sp'
+                bold: True
+                size_hint_y:0.05
+            MDLabel:
+                text: "Setting, change to admin account and more "
+                font_size: '15sp'
+                size_hint_y:0.05
+            ScrollView:
+                do_scroll_y: True
+                MDList:
+                    OneLineIconListItem:
+                        text: 'Setting'
+                        on_release:
+                            app.root.current="Setting"
+                            root.manager.transition.direction="left"
+                        IconLeftWidget:
+                            icon:'account-cog'
+                    OneLineIconListItem:
+                        text: 'Change permissions'
+                        on_release:
+                            app.root.current="Setting"
+                            root.manager.transition.direction="left"
+                        IconLeftWidget:
+                            icon:'account-convert-outline'
+                    OneLineIconListItem:
+                    
+                        text:"Contact us"
+                        on_release:
+                            app.root.current="ContactUs"
+                            root.manager.transition.direction="left"
+                        IconLeftWidget:
+                            icon:"card-account-mail"
+                    OneLineIconListItem:
+                        text:"Logout"
+                        on_release:
+                            app.root.current="StartScreen"
+                            root.manager.transition.direction="down"
+                        IconLeftWidget:
+                            icon:"logout"
+<SignUp>:
+    name: "SignUp"
+    GridLayout:
+        cols:1
+        MDProgressBar:
+            orientation: "horizontal"
+            value: 50
+            size_hint_y:None
+            color:71/255,71/255,107/255,0.3
+        MDLabel:
+            text:"BECOME A HOLOPHILE MEMBER"
+            font_size:'20sp'
+            bold: True
+            halign: "center"
+            size_hint_y:0.1
+        MDLabel:
+            text:"Create your profile with Hodophile and contribute to make the life quality better"
+            font_size:'14sp'
+            halign:"center"
+            color: "grey" 
+            size_hint_y:0.05
+        ScrollView:
+            do_scroll_y: True
+            GridLayout:
+                cols:1
+                padding:15
+                spacing:50
+                size_hint_y: None
+                height: self.minimum_height
+                adaptive_height: True
+                MDTextField:
+                    id: username
+                    hint_text:"User name"
+                    helper_text: "Maximum 15 characters in length"
+                    mode: "rectangle"
+                    max_text_length: 15
+                MDTextField:
+                    id: password
+                    hint_text:"Password"
+                    password: True
+                    mode: "rectangle"
+                MDTextField:
+                    id: birthday
+                    hint_text: 'Birthday'
+                    helper_text: "yyyy-mm-dd"
+                    mode: "rectangle"
+                    helper_text_mode: "persistent"
+                MDTextField:
+                    id: gender
+                    hint_text: "Gender"
+                    write_tab: False
+                    icon_right: 'arrow-down-drop-circle-outline'
+                    text:''
+                    on_focus: root.Genderdisplay_dropdown()
+                    mode: "rectangle"
+                MDTextField:
+                    id: residence
+                    hint_text: 'Residence'
+                    hint_text_color: 1,1,1,1
+                    icon_left: 'magnify'
+                    mode: "rectangle"
+                    helper_text_mode: "persistent"
+                    helper_text: "Select your city"
+                MDTextField:
+                    id: employment_Status
+                    hint_text: "Employment Status"
+                    write_tab: False
+                    icon_right: 'arrow-down-drop-circle-outline'
+                    text:''
+                    on_focus: root.Empdisplay_dropdown()
+                    mode: "rectangle"
+                GridLayout:
+                    cols:2
+                    spacing:10
+                    padding:10
+                    MDFillRoundFlatButton:
+                        text:"Back"
+                        size_hint_x:0.8
+                        pos_hint: {'center_x': 0.5}
+                        size_hint_y: None
+                        md_bg_color: 71/255,71/255,107/255,0.8
+                        on_release:
+                            app.root.current="StartScreen"
+                            root.manager.transition.direction="right"
+                    MDFillRoundFlatButton:
+                        text:"Next"
+                        size_hint_x:0.8
+                        pos_hint: {'center_x': 0.5}
+                        size_hint_y: None 
+                        md_bg_color: 71/255,71/255,107/255,0.8
+                        on_release:
+                            root.CollectDate()
+                            #root.CheckInfo()
+                MDLabel:
+                    text:''
+<PolicyandTerms>:
+    name: "PolicyandTerms"
+    GridLayout:
+        cols:1
+        MDProgressBar:
+            orientation: "horizontal"
+            value: 100
+            size_hint_y:None
+            color:71/255,71/255,107/255,0.3
+        MDLabel:
+            text:"BECOME A HOLOPHILE MEMBER"
+            font_size:14
+            bold: True
+            halign: "center"
+            size_hint_y:0.1
+        MDLabel:
+            text:"Terms and Privacy Policy"
+            font_size:12
+            halign:"center"
+            color: "grey" 
+            size_hint_y:0.05
+        ScrollView:
+            do_scroll_y: True
+            GridLayout:
+                cols:1
+                padding:20
+                spacing:20
+                size_hint_y: None
+                height: self.minimum_height
+                adaptive_height: True
+                MDLabel:
+                    text:""
+                MDLabel:
+                    text:"Hodophile collects your personal data you provide during Sign Up process, besides it collects information such as your location.\nThis application does not share your data with third parties"
+                    font_size:12
+                    halign:"left"
+                    color: "grey" 
+                MDLabel:
+                    text:""
+                MDLabel:
+                    text:""
+                MDLabel:
+                    text:""
+                GridLayout:
+                    cols:2
+                    spacing: 20
+                    padding:5
+                    MDCheckbox:
+                        id: CheckBox1
+                        on_active:
+                            root.checkbox_click(*args)
+                        size_hint: (0.1,1)
+                    MDLabel:
+                        text:"I agree to use my data as described above."
+                        font_size: 13
+                MDFillRoundFlatButton:
+                    text: "Decline"
+                    size_hint: (0.5,0.5)
+                    md_bg_color: 71/255,71/255,107/255,0.8
+                    on_release:
+                        app.root.current="StartScreen"
+                        root.manager.transition.direction="right"
+                MDFillRoundFlatButton:
+                    id: ConfirmB
+                    text: "Confirm"
+                    size_hint: (0.5,0.5)
+                    disabled: True
+                    md_bg_color: 71/255,71/255,107/255,0.8
+                    on_release:
+                        app.root.current="SignIn"
+                        root.manager.transition.direction="right"
+                        root.RegisterInfo()
+<ImageCaptions>:
+    name:"ImageCaptions"
+    GridLayout:
+        cols:1
+        spacing:15
+        padding:10
+        MDTopAppBar:
+            title:"Take Image"
+            icon: "calendar"
+            mode: "end"
+            specific_text_color:71/255,71/255,107/255
+            md_bg_color: "#FBFCFC"
+            elevation: 2
+            left_action_items: [["keyboard-backspace",lambda *args : setattr(root.manager, "current", "MainScreen"),'Back']] 
+        Camera:
+            id: camera
+            play: False
+        ToggleButton:
+            text: 'Start'
+            on_press: camera.play = not camera.play
+            size_hint_y: None
+            height: '48dp'
+        Button:
+            text: 'Send'
+            size_hint_y: None
+            height: '48dp'
+            #on_press: root.capture()
+
+
+<Complain>
+    name: "Complain"
+    FitImage:
+        source:"back.png"
+    GridLayout:
+        cols:1
+        spacing:40
+        padding:10
+        MDTopAppBar:
+            title:"Complain"
+            icon: "calendar"
+            specific_text_color:71/255,71/255,107/255
+            md_bg_color: "#FBFCFC"
+            mode: "end"
+            elevation: 2
+            left_action_items: [["keyboard-backspace",lambda *args : setattr(root.manager, "current", "MainScreen"),'Back']]  
+        MDLabel:
+            text:"Thank you for helping us to improve our services and quality of life of others"
+            font_size:'12sp'
+            halign:"center"
+            color: "grey" 
+            size_hint_y:0.05
+        GridLayout:
+            cols:2
+            spacing:15
+            padding:10
+            MDRaisedButton:
+                size_hint_x:0.5
+                pos_hint: {'center_x': 0.5}
+                text: "Show my complaints"
+                md_bg_color: 71/255,71/255,107/255,0.8
+            MDRaisedButton:
+                size_hint_x:0.5
+                pos_hint: {'center_x': 0.5}
+                text: "New complaint"
+                md_bg_color: 71/255,71/255,107/255,0.8
+                on_release:
+                    app.root.current="NewComplaint"
+                    root.manager.transition.direction="right"
+<NewComplaint>
+    name: "NewComplaint"
+    FitImage:
+        source:"back.png"
+    GridLayout:
+        cols:1
+        padding: 10
+        spacing:45
+        MDTopAppBar:
+            title:"Complain"
+            icon: "calendar"
+            specific_text_color:71/255,71/255,107/255
+            md_bg_color: "#FBFCFC"
+            mode: "end"
+            elevation: 2
+            left_action_items: [["keyboard-backspace",lambda *args : setattr(root.manager, "current", "Complain"),'Back']]  
+        MDLabel:
+            text:"Thank you for helping us to improve our services and quality of life of others"
+            font_size:'12sp'
+            halign:"center"
+            color: "grey" 
+            size_hint_y:0.05 
+        ScrollView:
+            do_scroll_y: True
+            GridLayout:
+                cols:1
+                spacing:120
+                padding:20
+                size_hint_y: None
+                height: self.minimum_height
+                adaptive_height: True
+                GridLayout:
+                    cols:2
+                    spacing:10
+                    padding:10
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Complaint Number"
+                        font_size:'16sp'
+                        halign: "left"
+                        color: "grey"
+                        halign: "center"
+                        bold:True
+                    MDLabel:
+                        text:"C221101"
+                        font_size:'16sp'
+                        halign: "center"
+                        color: 71/255,71/255,107/255
+                        bold:True
+                GridLayout:
+                    cols:2
+                    spacing:10
+                    padding:10 
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Complaint type"
+                        font_size:'16sp'
+                        color: "grey"
+                        halign: "center"
+                        bold:True
+                    MDRaisedButton:
+                        id: Complaint_type
+                        text: "Select"
+                        halign: "center"
+                        size_hint_x:1
+                        md_bg_color: 71/255,71/255,107/255,0.7
+                        on_release:
+                            root.Compl_Selection()
+                GridLayout:
+                    cols:2
+                    spacing:10
+                    padding:10 
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Upload Image"
+                        font_size:'16sp'
+                        color: "grey"
+                        halign: "center"
+                        bold:True
+                    MDRaisedButton:
+                        text: "Select"
+                        halign: "center"
+                        size_hint_x:1
+                        md_bg_color: 71/255,71/255,107/255,0.7
+                GridLayout:
+                    cols:2
+                    spacing:10
+                    padding:10 
+                    size_hint_y: None
+                    MDLabel:
+                        text:"Details"
+                        font_size:'16sp'
+                        color: "grey"
+                        halign: "center"
+                        bold:True
+                    MDTextField:
+                        hint_text: ""
+                        mode: "rectangle"
+                        multiline: True
+                        halign: "center"
+                GridLayout:
+                    cols:2
+                    spacing:10
+                    padding:10
+                    size_hint_y: None 
+                    MDRaisedButton:
+                        halign: "center"
+                        text: "Cancel"
+                        size_hint_x:0.8
+                        md_bg_color: 71/255,71/255,107/255,0.8
+                        on_release:
+                            app.root.current="Complain"
+                            root.manager.transition.direction="left"
+                    MDRaisedButton:
+                        text: "Submit"
+                        halign: "center"
+                        size_hint_x:0.8
+                        md_bg_color: 71/255,71/255,107/255,0.8
+<ContactUs>
+    name:"ContactUs"
+    FitImage:
+        source:"back.png"
+    GridLayout:
+        cols:1
+        padding: 10
+        spacing:20
+        MDTopAppBar:
+            title: 'Contact Us'
+            left_action_items: [["arrow-left",lambda *args : setattr(root.manager, "current", "MainScreen")]]
+            elevation:2
+            specific_text_color:71/255,71/255,107/255
+            md_bg_color: "#FBFCFC"
+
+        GridLayout:
+            cols:1
+            padding: 10
+            spacing:10
+            MDLabel:
+                text:"Get In Touch"
+                font_style: 'Subtitle1'
+                font_size:'20sp'
+                size_hint_y:None
+                #height:self.texture_size[1]
+            MDLabel:
+                text:"Questions or comments about this application? \nDo not hesitate to contact me"
+                font_style: 'Caption'    
+                #size_hint_y:None
+                font_size:'14sp'
+                #height:self.texture_size[1]
+        GridLayout:
+            cols:1
+            padding: 10
+            spacing:10
+            MDLabel:
+                text:"Email"
+                font_size:'20sp'
+                font_style: 'Subtitle1'
+                size_hint_y:None
+                #height:self.texture_size[1]
+            MDLabel:
+                text:"CaseStudyTHD@gmail.com"
+                font_style: 'Caption'    
+                size_hint_y:None
+                font_size:'14sp'
+                #height:self.texture_size[1]
+        GridLayout:
+            cols:1
+            padding: 10
+            spacing:10
+<UnderConstruction>
+    name:"UnderConstruction"
+    GridLayout:
+        cols:1
+        padding: 10
+        spacing:10
+    GridLayout:
+        cols:1
+        padding: 10
+        spacing:20
+        MDTopAppBar:
+            title: 'Sorry for the inconvenience'
+            left_action_items: [["arrow-left",lambda *args : setattr(root.manager, "current", "MainScreen")]]
+            elevation:2
+            specific_text_color:71/255,71/255,107/255
+            md_bg_color: "#FBFCFC"
+        GridLayout:
+            cols:1
+            padding: 10
+            spacing:10
+            Image:
+                source:"underconstruction.png"
+                #size_hint_y:5
+                #pos_hint: {'center_y': 0.4}
