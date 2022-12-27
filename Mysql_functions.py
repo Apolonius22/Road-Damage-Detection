@@ -45,7 +45,7 @@ def get_cursor():
 
 
 
-
+                                                        #YYYY-MM-DD HH-MM-SS###########
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image):
     mycursor, mydb = get_cursor()
     if mycursor != None or mydb != None: 
@@ -68,6 +68,28 @@ def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, rep
         mycursor.close()
         mydb.close()
 
+def log_damage(Damage):
+    mycursor, mydb = get_cursor()
+    if mycursor != None or mydb != None: 
+
+        previous_damages = get_all_damages()
+        damage_unique = True
+        for damage in previous_damages:
+            if damage.lat == Damage.lat and damage.lon == Damage.lon:# and damage.damageclass == damageclass:
+                damage_unique = False
+        if damage_unique:
+            #mycursor = mydb.cursor()
+            sql = '''INSERT INTO registered_damages (lat, lon, damage_class, severity_class, weather, timestamp, user_id, repair_status,image) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+            val = (Damage.lat, Damage.lon, Damage.damageclass, Damage.severity, Damage.weather, Damage.timestamp, Damage.user_id, Damage.repair_status, Damage.piture_path)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            print("logged successfully")
+        else:
+            print("damage GPS already logged")
+        mycursor.close()
+        mydb.close()
+
 
 def get_all_damages():
     mycursor, mydb = get_cursor()
@@ -77,9 +99,9 @@ def get_all_damages():
         myresult = mycursor.fetchall()
         
         for i in myresult:
-            storing_path = current_path +f"\\cache\\{i[0]}.jpg"
+            picture_storing_path = current_path +f"\\cache\\{i[0]}.jpg"
             #write_file(i[9], storing_path)
-            damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],storing_path))
+            damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],picture_storing_path))
         mycursor.close()
         mydb.close()
         
@@ -153,9 +175,10 @@ def UserRegistration(user_name, password, birthday, gender, residence, employmen
 
 ############### debugging code ##############
 if False: 
-
-    log_damage(49.5, 11.5, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
-    print(CheckUserName("hans"))
-    for damage in get_all_damages():
-                print(damage)
-    print(get_all_users())
+###############################################YYYY-MM-DD HH-MM-SS###########
+#              lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image
+    log_damage(49.221039, 12.675019, 3, 2, 0, "2022-11-23 12:01:11", 2, 0,"Test")
+    #print(CheckUserName("hans"))
+    #for damage in get_all_damages():
+    #            print(damage)
+    #print(get_all_users())
