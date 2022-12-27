@@ -425,7 +425,6 @@ ScreenManager:
             specific_text_color: "#4a4939"
             right_action_items:
                 [
-                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
                 ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
                 ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
                 ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],
@@ -484,6 +483,7 @@ ScreenManager:
 
 
                     Button:
+                        id: start_button
                         text: "Save and Start the detection"
                         size_hint: (1, 0.4)
                         bold: True
@@ -491,10 +491,13 @@ ScreenManager:
                         background_color: '#25a9e8'
                         on_release: 
                             app.root.screens[2].run_detection()
+                            app.root.screens[2].ids.start_button.disabled = True
+                            app.root.screens[2].ids.start_button.text = "Detection Runing"
 
 
-            FitImage:
-                source: r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\frame_1.jpg"
+
+            Image:
+                source: r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\logo2.png"
                                 
                                 
                             
@@ -517,7 +520,6 @@ ScreenManager:
             left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
             right_action_items:
                 [
-                ["reload", lambda x: app.reload_damages(mapview), "reload", "reload"],
                 ["map", lambda x: app.switch_to_Mainscreen(), "analyze damages", "analyze damages"],
                 ["camera", lambda x: app.switch_to_Analyticsscreen(), "analyze video", "Message reply"],
                 ["alert-box-outline", lambda x: app.switch_to_Complainscreen(), "complains", "complains"],

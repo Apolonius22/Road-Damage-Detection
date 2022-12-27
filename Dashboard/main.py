@@ -50,7 +50,7 @@ sys.path.append('../Road-Damage-Detection') # neccessary for imports to be found
 
 from functions import *
 from Mysql_functions import *
-from run_yolo import run_rdd
+
 
 
 
@@ -412,23 +412,21 @@ class Analyticsscreen(Screen):
     latestpath = ""
     selected_path_list = []
 
-    def remove_path_from_list(self,test):
-        #print(test)
-        for i in self.ids.file_list.children:
-            if i.id == test:
-                self.selected_path_list.remove(test)
-                self.ids.file_list.remove_widget(i)
-        
-        #self.ids.file_list.remove_widget(test)
+    def remove_path_from_list(self,widget):
+
+        self.ids.file_list.remove_widget(widget.parent.parent)
+        self.selected_path_list.remove(widget.id)
+
         
     def add_path_to_list(self):
         try:
             kind = filetype.guess(self.selected_path_list[-1])
+            print(kind)
         except:
             self.selected_path_list.pop()
             return
         if kind.mime.startswith("video"):
-            self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
+            self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(x),id = str(self.selected_path_list[-1])),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
         else:
             self.selected_path_list.pop()
 
