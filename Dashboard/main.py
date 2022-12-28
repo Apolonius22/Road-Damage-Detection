@@ -411,6 +411,14 @@ class Complainscreen(Screen):
 class Analyticsscreen(Screen):
     latestpath = ""
     selected_path_list = []
+    t1 = None
+
+    def on_enter(self):
+        if self.t1 != None:
+            if not self.t1.is_alive:
+                print("analysis is done")
+                self.ids.image_done.source = r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\1.jpg"
+                self.ids.image_done.reload()
 
     def remove_path_from_list(self,widget):
 
@@ -433,7 +441,12 @@ class Analyticsscreen(Screen):
     def run_detection(self):
         if len(self.selected_path_list) > 0:
             for file in self.selected_path_list:
-                run_rdd(file)
+                self.t1 = run_rdd(file)
+
+    def print_tread_status(self):
+        if self.t1 != None:
+            print(self.t1.is_alive())
+
 
 
 

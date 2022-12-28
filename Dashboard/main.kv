@@ -494,9 +494,21 @@ ScreenManager:
                             app.root.screens[2].ids.start_button.disabled = True
                             app.root.screens[2].ids.start_button.text = "Detection Runing"
 
+                    Button:
+                        id: test_button
+                        text: "Save and Start the detection"
+                        size_hint: (1, 0.4)
+                        bold: True
+                        font_size:16
+                        background_color: '#25a9e8'
+                        on_release: 
+                            app.root.screens[2].print_tread_status()
+
+
 
 
             Image:
+                id : image_done
                 source: r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\logo2.png"
                                 
                                 

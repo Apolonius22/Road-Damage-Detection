@@ -95,5 +95,6 @@ def run_rdd(source_file_path, detection_mode = None):
 
     t1 = threading.Thread(target=os.system, args=(command,))
     t1.start()
+    return t1
 
 
