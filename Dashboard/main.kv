@@ -491,25 +491,27 @@ ScreenManager:
                         background_color: '#25a9e8'
                         on_release: 
                             app.root.screens[2].run_detection()
-                            app.root.screens[2].ids.start_button.disabled = True
+                            #app.root.screens[2].ids.start_button.disabled = True
                             app.root.screens[2].ids.start_button.text = "Detection Runing"
-
-                    Button:
-                        id: test_button
-                        text: "Save and Start the detection"
-                        size_hint: (1, 0.4)
-                        bold: True
-                        font_size:16
-                        background_color: '#25a9e8'
-                        on_release: 
                             app.root.screens[2].print_tread_status()
 
 
+            BoxLayout:
+                #size_hint: None, None
+                #size: 700, 200
+                #pos: 200, 200 
+
+                MDSpinner:
+                    id: status_spinner
+                    size_hint: None,None
+                    size: dp(46), dp(46)
+                    pos_hint:{'center_x': .6, 'center_y': .5}
+                    active: False
 
 
-            Image:
-                id : image_done
-                source: r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\logo2.png"
+                MDLabel:
+                    id: status_lable
+                    text: ""#please start the detection"
                                 
                                 
                             

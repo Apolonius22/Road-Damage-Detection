@@ -9,6 +9,7 @@ from tkinter import E, Label
 from kivy_garden.mapview import MapMarkerPopup,MapView
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
+from kivy.clock import Clock
 
 ####################  Kivy.uix imports ####################
 
@@ -39,6 +40,9 @@ from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, I
 
 import sys
 import filetype
+import subprocess
+
+#import 
  
 
 
@@ -413,12 +417,30 @@ class Analyticsscreen(Screen):
     selected_path_list = []
     t1 = None
 
+
     def on_enter(self):
+        pass
+        #if self.t1 != None:
+        #    if not self.t1.is_alive():
+        #        print("analysis is done")
+        #        self.ids.image_done.source = r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\1.jpg"
+        #        self.ids.image_done.status_lable()
+
+    def detection_status_callback(self, *args):
         if self.t1 != None:
-            if not self.t1.is_alive:
-                print("analysis is done")
-                self.ids.image_done.source = r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\1.jpg"
-                self.ids.image_done.reload()
+            if self.t1.is_alive():
+                #command = "dir"
+                #output = subprocess.check_output(command, text=True, shell=True, )
+                #print(output)
+                output = sys.argv[1:]
+                #self.ids.status_lable.text = "detection running"
+                self.ids.status_lable.text = "    detection running"
+                self.ids.status_spinner.active = True
+            if not self.t1.is_alive():
+                self.ids.status_lable.text = "detection done and report generation started"
+                self.ids.status_spinner.active = False
+
+
 
     def remove_path_from_list(self,widget):
 
@@ -439,9 +461,11 @@ class Analyticsscreen(Screen):
             self.selected_path_list.pop()
 
     def run_detection(self):
-        if len(self.selected_path_list) > 0:
+        if len(self.selected_path_list) > 0 and self.t1 == None:
             for file in self.selected_path_list:
                 self.t1 = run_rdd(file)
+                Clock.schedule_interval(self.detection_status_callback,1)
+                
 
     def print_tread_status(self):
         if self.t1 != None:
