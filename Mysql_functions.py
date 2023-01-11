@@ -4,8 +4,7 @@ import os
 from functions import *
 import mysql.connector
 from mysql.connector import errorcode
-from kivy.uix.popup import Popup
-from kivy.uix.label import Label
+
 
 
 #mydb = mysql.connector.connect(
@@ -21,7 +20,6 @@ config = {
   'password':'BestTeam123',
   'database':'roaddamages',
   'client_flags': [mysql.connector.ClientFlag.SSL],
-  'ssl_ca': r'C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem'
 }
 
 
@@ -174,10 +172,10 @@ def UserRegistration(user_name, password, birthday, gender, residence, employmen
 
 
 ############### debugging code ##############
-if False: 
+#if True: 
 ###############################################YYYY-MM-DD HH-MM-SS###########
 #              lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image
-    log_damage(49.221039, 12.675019, 3, 2, 0, "2022-11-23 12:01:11", 2, 0,"Test")
+    #log_damage(49.221039, 12.675019, 3, 2, 0, "2022-11-23 12:01:11", 2, 0,"Test")
     #print(CheckUserName("hans"))
     #for damage in get_all_damages():
     #            print(damage)
