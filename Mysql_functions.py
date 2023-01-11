@@ -1,10 +1,12 @@
 from enum import unique
 import sqlite3
 import os
-from functions import *
+#from functions import *
 import mysql.connector
 from mysql.connector import errorcode
-
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
+from kivy import platform
 
 
 #mydb = mysql.connector.connect(
@@ -15,38 +17,47 @@ from mysql.connector import errorcode
 #)
 
 config = {
-  'host':'roaddamages2.mysql.database.azure.com',
-  'user':'CaseStudyMSS2',
-  'password':'BestTeam123',
-  'database':'roaddamages',
-  'client_flags': [mysql.connector.ClientFlag.SSL],
+    'host':'roaddamages2.mysql.database.azure.com',
+    'user':'CaseStudyMSS2',
+    'password':'BestTeam123',
+    'database':'roaddamages',
+    'client_flags': [mysql.connector.ClientFlag.SSL],
+
+}
+config_android={
+    'host':'roaddamages2.mysql.database.azure.com',
+    'user':'CaseStudyMSS2',
+    'password':'BestTeam123',
+    'port':3306,
+    'database':'roaddamages',
+    'client_flags': [mysql.connector.ClientFlag.SSL],
+    'ssl_ca':'D-TRUST_Root_Class_3_CA_2_2009.crt',
 }
 
+if platform=="android":
+    config=config_android
 
 def get_cursor():
-    try:
-       mydb = mysql.connector.connect(**config)
-       print("Connection established")
-    except mysql.connector.Error as err:
-        mydb = None
-        mycursor = None
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with the user name or password")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(err)
-    else:
-        mycursor = mydb.cursor()
+  try:
+      mydb = mysql.connector.connect(**config)
+      print("Connection established")
+  except mysql.connector.Error as err:
+      mydb = None
+      mycursor = None
+      if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+          print("Something is wrong with the user name or password")
+      elif err.errno == errorcode.ER_BAD_DB_ERROR:
+          print("Database does not exist")
+      else:
+          print(err)
+  else:
+      mycursor = mydb.cursor()
 
-    return mycursor, mydb
+  return mycursor, mydb
 
-
-
-                                                        #YYYY-MM-DD HH-MM-SS###########
 def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image):
     mycursor, mydb = get_cursor()
-    if mycursor != None or mydb != None: 
+    if mycursor != None or mydb != None:
 
         previous_damages = get_all_damages()
         damage_unique = True
@@ -55,7 +66,7 @@ def log_damage(lat, lon, damageclass, severity, weather, timestamp, user_id, rep
                 damage_unique = False
         if damage_unique:
             #mycursor = mydb.cursor()
-            sql = '''INSERT INTO registered_damages (lat, lon, damage_class, severity_class, weather, timestamp, user_id, repair_status,image) 
+            sql = '''INSERT INTO registered_damages (lat, lon, damage_class, severity_class, weather, timestamp, user_id, repair_status,image)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'''
             val = (lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image)
             mycursor.execute(sql, val)
@@ -95,14 +106,14 @@ def get_all_damages():
     if mycursor != None or mydb != None:
         mycursor.execute("SELECT * FROM registered_damages")
         myresult = mycursor.fetchall()
-        
+
         for i in myresult:
             picture_storing_path = current_path +f"\\cache\\{i[0]}.jpg"
             #write_file(i[9], storing_path)
             damagelist.append(Damage(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],picture_storing_path))
         mycursor.close()
         mydb.close()
-        
+
     return damagelist
 
 
@@ -120,9 +131,9 @@ def log_user(email, password, points):
 
 
 def get_all_users():
-    
+
     mycursor, mydb = get_cursor()
-    
+
     if mycursor != None or mydb != None:
         mycursor = mydb.cursor()
         mycursor.execute("SELECT * FROM Users")
@@ -136,7 +147,6 @@ def get_all_users():
 ###################################################################
 
 def CheckUserName(user_name):
-    
     mycursor, mydb = get_cursor()
     if mycursor != None or mydb != None:
         mycursor.execute('SELECT * FROM users WHERE user_name = %(username)s',{'username' : user_name})
@@ -157,7 +167,6 @@ def CheckUserName(user_name):
         return User_unique
 
 def UserRegistration(user_name, password, birthday, gender, residence, employment_status,total_gained_points):
-    
     mycursor, mydb = get_cursor()
     if mycursor != None or mydb != None:
         sql="INSERT INTO users (user_name, password, birthday, gender, residence, employment_status,total_gained_points) VALUES (%s, %s, %s, %s, %s, %s,%s)"
@@ -169,14 +178,20 @@ def UserRegistration(user_name, password, birthday, gender, residence, employmen
         mydb.close()
         print("logged successfully")
 
+def Complaintfetching(user_id):
+    mycursor, mydb = get_cursor()
+    if mycursor != None or mydb != None:
+        mycursor.execute('SELECT idcomplaints,complaint_type,city,timestamp,complaint_status FROM complaints WHERE user_id = %(user_id)s',{'user_id' : user_id})
+        complaintslist = mycursor.fetchall()
 
-
+        return complaintslist
 ############### debugging code ##############
-#if True: 
-###############################################YYYY-MM-DD HH-MM-SS###########
-#              lat, lon, damageclass, severity, weather, timestamp, user_id, repair_status,image
-    #log_damage(49.221039, 12.675019, 3, 2, 0, "2022-11-23 12:01:11", 2, 0,"Test")
-    #print(CheckUserName("hans"))
-    #for damage in get_all_damages():
-    #            print(damage)
-    #print(get_all_users())
+
+if False:
+
+    log_damage(49.5, 11.5, 1, 1, 1, "2022-12-03 12:01:11", 1, 0,"Test")
+    print(CheckUserName("hans"))
+    for damage in get_all_damages():
+                print(damage)
+    print(get_all_users())
+
