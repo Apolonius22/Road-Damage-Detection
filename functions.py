@@ -111,7 +111,7 @@ def create_gpx(source_file, gpx_file = None):
     fmt_file = os.path.join(current_path, "tools", "gpx.fmt")
 
     if gpx_file == None:
-        gpx_file = 
+        gpx_file = None
     with open(gpx_file, "w+") as gpx_file:
         exiftool_command = [path_to_exif , f'{source_file}' , "-p" , f'{fmt_file}' , "-ee"]
         subprocess.run(exiftool_command,stdout = gpx_file)
