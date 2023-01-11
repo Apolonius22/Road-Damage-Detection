@@ -9,6 +9,7 @@ from tkinter import E, Label
 from kivy_garden.mapview import MapMarkerPopup,MapView
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
+from kivy.clock import Clock
 
 ####################  Kivy.uix imports ####################
 
@@ -18,18 +19,44 @@ from kivy.uix.bubble import Bubble
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
-from kivy.uix.screenmanager import FadeTransition,Screen#, NoTransition, CardTransition, ScreenManager
+from kivy.uix.screenmanager import FadeTransition,Screen
 from kivy.uix.widget import Widget
 from kivy.uix.spinner import Spinner
 from kivy.uix.gridlayout import GridLayout
 
 
 ####################  Kivymd imports ####################
+
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.list import IRightBodyTouch
+from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget, IconLeftWidgetWithoutTouch
+
+#################### Other Imports ####################
+
+import sys
+import filetype
+import subprocess
+
+#import 
+ 
+
+
+#################### imports from other Files ###########
+
+
+# setting pathC:
+sys.path.append('../Road-Damage-Detection') # neccessary for imports to be found 
+
+from functions import *
+from Mysql_functions import *
+
+
+
 
 
 #################### configuration / Global Variables
@@ -37,33 +64,28 @@ from kivymd.uix.menu import MDDropdownMenu
 Window.maximize()
 
 
-#################### Other Imports ####################
-
-import sys
- 
-# setting pathC:
-sys.path.append('../Road-Damage-Detection')
-
-from functions import *
-from Mysql_functions import *
-from run_yolo import run_rdd
 
 
-#################### Screens ####################
 
 
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.list import IRightBodyTouch
-from kivymd.uix.list import MDList, OneLineAvatarIconListItem, IconLeftWidget, IconRightWidget, IconLeftWidgetWithoutTouch
-import filetype
+
 
 class Map(MapView):
 
+
+
     init = False
     damage_id_on_map_list = []
+    damage_marker_list = []
     
     def load_points_from_db(self,*args):
             self.init = True
+            #self.damage_id_on_map_list = []
+
+            # if len(get_all_damages()) ==  0:
+
+            #     app.root.screens[2].online = False
+
 
             for damage in get_all_damages():
 
@@ -78,7 +100,7 @@ class Map(MapView):
                         date = damage.timestamp
                     else:
                         date = "unknown"
-                    text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {damage.lat}\\{damage.lon}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nTimestamp: {date}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
+                    text = MDLabel(text = f"""Damage ID: {damage.damage_id}\nLocation: {round(damage.lat,3)}\\{round(damage.lon,3)}\nType: {damage.damageclass}\nSeverity: {damage.severity}\nWeather: {damage.weather}\nDate: {date.date()}\nTime: {date.time()}\nUser ID: {damage.user_id}\nRepair status: {damage.repair_status} """)
 
                     first = BoxLayout(orientation = "horizontal",padding= "10dp",spacing=10)
 
@@ -101,7 +123,8 @@ class Map(MapView):
                     first.add_widget(card)
                     bub.add_widget(first)
                     marker.add_widget(bub)
-                    self.damage_id_on_map_list.append((damage,marker))
+                    self.damage_marker_list.append((damage,marker))
+                    self.damage_id_on_map_list.append(damage.damage_id)
                     self.add_widget(marker)
 
 
@@ -135,37 +158,54 @@ class Map(MapView):
             print(damage)
 
     def apply_filter(self,damage_filter):
+
         self.load_points_from_db()
-        for damage,marker in self.damage_id_on_map_list:
+        q = self.damage_marker_list
+        for damage,marker in self.damage_marker_list:
             
             if damage.damageclass not in damage_filter.classselection:
-                self.remove_widget(marker)
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
+                self.remove_widget(marker) 
+                continue
 
             if damage.severity not in damage_filter.severityselection:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
             if damage.weather not in damage_filter.weatherselection:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
             if damage.user_id not in damage_filter.userselection and len(damage_filter.userselection) > 0:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
             if damage.repair_status not in damage_filter.repairstatusselection:
+                self.damage_id_on_map_list.remove(damage.damage_id)
+                #self.damage_marker_list.remove((damage,marker))
                 self.remove_widget(marker)
+                continue
 
 
-
-            
-            area_filter = False
             if len(damage_filter.areaselection) > 0:
-                area_filter = True
                 area = get_adress(damage.lat,damage.lon)
                 for location in damage_filter.areaselection:
-                    if location.lower() in area.address.lower():
-                        area_filter = False
+                    if location.lower() not in area.address.lower():
+                   
+                        self.damage_id_on_map_list.remove(damage.damage_id)
+                        #self.damage_marker_list.remove((damage,marker))
+                        self.remove_widget(marker)
 
-            if area_filter:
-                self.remove_widget(marker)
+
+
+
 
 
 
@@ -177,6 +217,9 @@ class ClickableTextFieldRound(MDRelativeLayout):
     text = StringProperty()
     hint_text = StringProperty()
 
+
+
+###################### Classes for the filter selections menue ##################
 
 class Areaselection(MDBoxLayout):
     pass
@@ -190,15 +233,22 @@ class Userselection(MDBoxLayout):
     pass
 class Repairstatusselection(MDBoxLayout):
     pass
-    
+
+####################### File selection pop class ################################################## 
 
 class SaveFile(Popup):
     def Getthepath(self,filepath,app):
         
         app.root.screens[2].selected_path_list.append(str(filepath))
 
+class Filepicker(GridLayout):
+    
+    def __init__(self, **kwargs):
+        super(Filepicker, self).__init__(**kwargs)
+        filepop = SaveFile()
+        filepop.open()
 
-
+############################# Screens #######################################
 
 class Loginscreen(Screen):
     pass
@@ -210,6 +260,7 @@ class Mainscreen(Screen):
     
     filter_dropdown = ObjectProperty()
     damage_filter = Filter()
+    online = True
 
 
     def on_enter(self):
@@ -246,11 +297,20 @@ class Mainscreen(Screen):
             "id": "repairstatusselection",
             },
             {
-            "viewclass": "MDIconButton",
+            "viewclass": "MDRoundFlatIconButton",
             "text": "Apply Filter:",
-            "icon": "language-python",
+            "icon": "filter",
             "on_release": lambda x="City": self.menu_callback(x),
             },
+            # {
+            # "viewclass": "MDProgressBar",
+            # "id": "progress",
+            # "type": "determinate",
+            # "running_duration": "1",
+            # "catching_duration": "1.5",
+            # },
+
+            
         ]
         self.filter_dropdown = MDDropdownMenu(
             width_mult = 8,
@@ -261,8 +321,12 @@ class Mainscreen(Screen):
 
         
 
+
     def menu_callback(self,text_of_the_option):
         #self.repairstatusselection = repairstatusselection_good
+        progressbar = None
+
+
 
         for filter in self.filter_dropdown.children[0].children[0].children[0].children:
 
@@ -296,9 +360,9 @@ class Mainscreen(Screen):
                 else:
                     self.damage_filter.classselection.discard('Crack')
                 if filter.ids.classselection_allicrack.active:
-                    self.damage_filter.classselection.add('AlligatorCrack')
+                    self.damage_filter.classselection.add('Alligator Crack')
                 else:
-                    self.damage_filter.classselection.discard('AlligatorCrack')
+                    self.damage_filter.classselection.discard('Alligator Crack')
                 if filter.ids.classselection_pothole.active:
                     self.damage_filter.classselection.add('Pothole')
                 else:
@@ -338,7 +402,9 @@ class Mainscreen(Screen):
                         except:
                             continue               
                 print(self.damage_filter.userselection)
+
         self.ids.mapview.apply_filter(self.damage_filter)
+
 
 class Settingsscreen(Screen):
     pass
@@ -349,39 +415,65 @@ class Complainscreen(Screen):
 class Analyticsscreen(Screen):
     latestpath = ""
     selected_path_list = []
+    t1 = None
 
-    def remove_path_from_list(self,test):
-        #print(test)
-        for i in self.ids.file_list.children:
-            if i.id == test:
-                self.selected_path_list.remove(test)
-                self.ids.file_list.remove_widget(i)
-        
-        #self.ids.file_list.remove_widget(test)
+
+    def on_enter(self):
+        pass
+        #if self.t1 != None:
+        #    if not self.t1.is_alive():
+        #        print("analysis is done")
+        #        self.ids.image_done.source = r"C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\Dashboard\1.jpg"
+        #        self.ids.image_done.status_lable()
+
+    def detection_status_callback(self, *args):
+        if self.t1 != None:
+            if self.t1.is_alive():
+                #command = "dir"
+                #output = subprocess.check_output(command, text=True, shell=True, )
+                #print(output)
+                output = sys.argv[1:]
+                #self.ids.status_lable.text = "detection running"
+                self.ids.status_lable.text = "    detection running"
+                self.ids.status_spinner.active = True
+            if not self.t1.is_alive():
+                self.ids.status_lable.text = "detection done and report generation started"
+                self.ids.status_spinner.active = False
+
+
+
+    def remove_path_from_list(self,widget):
+
+        self.ids.file_list.remove_widget(widget.parent.parent)
+        self.selected_path_list.remove(widget.id)
+
         
     def add_path_to_list(self):
         try:
             kind = filetype.guess(self.selected_path_list[-1])
+            print(kind)
         except:
             self.selected_path_list.pop()
             return
         if kind.mime.startswith("video"):
-            self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(str(self.selected_path_list[-1]))),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
+            self.ids.file_list.add_widget(OneLineAvatarIconListItem(IconLeftWidgetWithoutTouch(icon="video"),IconRightWidget(icon="minus",on_release=lambda x: self.remove_path_from_list(x),id = str(self.selected_path_list[-1])),id = str(self.selected_path_list[-1]),text = self.selected_path_list[-1]),len(self.ids.file_list.children)-1)
         else:
             self.selected_path_list.pop()
 
     def run_detection(self):
-        if len(self.selected_path_list) > 0:
+        if len(self.selected_path_list) > 0 and self.t1 == None:
             for file in self.selected_path_list:
-                run_rdd(file)
+                self.t1 = run_rdd(file)
+                Clock.schedule_interval(self.detection_status_callback,1)
+                
+
+    def print_tread_status(self):
+        if self.t1 != None:
+            print(self.t1.is_alive())
 
 
-class Filepicker(GridLayout):
-    
-    def __init__(self, **kwargs):
-        super(Filepicker, self).__init__(**kwargs)
-        filepop = SaveFile()
-        filepop.open()
+
+
         
 
 
@@ -391,10 +483,10 @@ class Filepicker(GridLayout):
 class MainApp(MDApp):
    
 
-
     def build(self):
         pass
 
+##################### Functions for switching screens to make changes in animation etc. central
 
     def switch_to_Analyticsscreen(self):
         self.root.transition = FadeTransition(duration=0.5)
@@ -416,6 +508,9 @@ class MainApp(MDApp):
         self.root.transition = FadeTransition(duration=0.5)
         self.root.current = "Complainscreen"
 
+#############################################################################################################
+
+
     def reload_damages(self,mapview):
         mapview.print_points_from_db()
 
@@ -423,10 +518,10 @@ class MainApp(MDApp):
         mapview.center(location)
 
 
-    def callback2(self):#),instance):
+    def callback2(self):
         return Filepicker()
     
-    def callback3(self):#),instance):
+    def callback3(self):
         pass
 
 
