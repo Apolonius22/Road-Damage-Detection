@@ -20,7 +20,7 @@ config = {
   'password':'BestTeam123',
   'database':'roaddamages',
   'client_flags': [mysql.connector.ClientFlag.SSL],
-  'ssl_ca': r'C:\Users\tobia\Documents\GitHub\Road-Damage-Detection\DigiCertGlobalRootG2.crt.pem'
+  #'ssl_ca': '/var/www/html/BaltimoreCyberTrustRoot.crt.pem'
 }
 
 
