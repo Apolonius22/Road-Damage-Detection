@@ -1,8 +1,9 @@
 "# Road-Damage-Detection" 
 
-Members of Projekt
+Members of Project
 
-1
-2
-3
+Anmol Sharma
+Elham Alfuqara
+Tobias d'Apolonia
+Wen-Hao Wu
 
