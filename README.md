@@ -2,8 +2,8 @@
 
 Members of Project
 
-Anmol Sharma
-Elham Alfuqara
-Tobias d'Apolonia
+Anmol Sharma\n
+Elham Alfuqara\n
+Tobias d'Apolonia\n
 Wen-Hao Wu
 
